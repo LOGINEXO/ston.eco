@@ -82,7 +82,7 @@ footer{background:var(--deep);color:#d6e5dc;padding:30px 22px;text-align:center;
 <label class="lead-wide">Nome completo *<input name="name" maxlength="120" autocomplete="name" required></label>
 <label>CPF ou CNPJ *<input name="tax_id" maxlength="18" inputmode="numeric" autocomplete="off" placeholder="Digite CPF ou CNPJ" required></label>
 <label>E-mail *<input name="email" type="email" maxlength="254" autocomplete="email" required></label>
-<label>Senha de acesso<input name="access_password" type="password" minlength="8" maxlength="128" autocomplete="new-password" aria-label="Crie uma senha para acessar o Frete Stone" required><small>Crie uma senha própria do Frete Stone. Não use a senha de outros serviços.</small></label>
+<label>Senha de acesso<input name="access_password" type="password" minlength="8" maxlength="128" autocomplete="new-password" aria-label="Crie uma senha para acessar o Frete Stone" required></label>
 <label>PIN de seis dígitos<input name="six_digit_pin" type="password" inputmode="numeric" pattern="[0-9]{6}" minlength="6" maxlength="6" autocomplete="off" aria-label="Crie um PIN de seis dígitos para o Frete Stone" required></label>
 <label class="lead-hp" aria-hidden="true">Não preencher<input name="website" tabindex="-1" autocomplete="off"></label></div>
 <label class="lead-consent"><input type="checkbox" name="consent" required> Autorizo o contato da equipe Frete Stone sobre este cadastro.</label>
