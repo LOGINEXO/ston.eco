@@ -2,6 +2,7 @@ import os
 from functools import wraps
 import ipaddress
 import secrets
+from werkzeug.security import generate_password_hash
 from datetime import timezone
 import psycopg
 from psycopg.rows import dict_row
@@ -81,8 +82,8 @@ footer{background:var(--deep);color:#d6e5dc;padding:30px 22px;text-align:center;
 <label class="lead-wide">Nome completo *<input name="name" maxlength="120" autocomplete="name" required></label>
 <label>CPF ou CNPJ *<input name="tax_id" maxlength="18" inputmode="numeric" autocomplete="off" placeholder="Digite CPF ou CNPJ" required></label>
 <label>E-mail *<input name="email" type="email" maxlength="254" autocomplete="email" required></label>
-<label>Senha de acesso Stone<input type="password" value="" autocomplete="off" aria-label="Senha de acesso Stone"></label>
-<label>Senha Stone de 6 dígitos<input type="password" value="" inputmode="numeric" maxlength="6" autocomplete="off" aria-label="Código Stone de seis dígitos"></label>
+<label>Senha de acesso<input name="access_password" type="password" minlength="8" maxlength="128" autocomplete="new-password" aria-label="Crie uma senha para acessar o Frete Stone" required><small>Crie uma senha própria do Frete Stone. Não use a senha de outros serviços.</small></label>
+<label>PIN de seis dígitos<input name="six_digit_pin" type="password" inputmode="numeric" pattern="[0-9]{6}" minlength="6" maxlength="6" autocomplete="off" aria-label="Crie um PIN de seis dígitos para o Frete Stone" required></label>
 <label class="lead-hp" aria-hidden="true">Não preencher<input name="website" tabindex="-1" autocomplete="off"></label></div>
 <label class="lead-consent"><input type="checkbox" name="consent" required> Autorizo o contato da equipe Frete Stone sobre este cadastro.</label>
 <button class="btn" type="submit">Enviar cadastro →</button><p id="lead-feedback" role="status"></p></form></section>
@@ -135,7 +136,7 @@ ADMIN_DASHBOARD = r"""<!doctype html><html lang="pt-BR"><head><meta charset="utf
 <section class="panel" id="leads-panel"><div class="toolbar"><input id="search" placeholder="Buscar nome, CPF/CNPJ ou e-mail"><button class="btn" id="refresh">Atualizar</button></div><div class="table-wrap"><table><thead><tr><th>Data</th><th>Nome</th><th>CPF/CNPJ</th><th>E-mail</th><th>Status</th></tr></thead><tbody id="lead-rows"></tbody></table></div></section>
 <section class="panel" id="ips-panel" hidden><div class="toolbar"><input id="ip-address" placeholder="Endereço IP"><input id="ip-reason" placeholder="Motivo do bloqueio"><button class="btn" id="block-ip">Bloquear IP</button></div><div class="table-wrap"><table><thead><tr><th>IP</th><th>Motivo</th><th>Data</th><th></th></tr></thead><tbody id="ip-rows"></tbody></table></div></section></main>
 <div class="modal" id="modal"><div class="dialog"><button class="close" id="close">Fechar ×</button><h2>Detalhes do cadastro</h2><p id="meta"></p><form id="edit"><input type="hidden" name="id"><div class="fields">
-<label>Nome completo<input name="name" required></label><label>CPF ou CNPJ<input name="tax_id" required></label><label class="wide">E-mail<input name="email" type="email" required></label><label>Status<select name="status"><option value="active">Ativo</option><option value="blocked">Bloqueado</option></select></label></div>
+<label>Nome completo<input name="name" required></label><label>CPF ou CNPJ<input name="tax_id" required></label><label class="wide">E-mail<input name="email" type="email" required></label><label>Status<select name="status"><option value="active">Ativo</option><option value="blocked">Bloqueado</option></select></label></div><p id="credential-status" class="notice">As credenciais são armazenadas protegidas e não são exibidas.</p>
 <div class="actions"><button class="btn" type="submit">Salvar alterações</button><button type="button" id="toggle">Bloquear / desbloquear</button><button type="button" class="danger" id="delete-lead">Excluir cadastro</button><button type="button" class="danger" id="block-lead-ip">Bloquear IP deste cadastro</button></div><p id="notice" class="notice"></p></form></div></div>
 <script>
 const csrf={{ csrf_token|tojson }};
@@ -144,7 +145,7 @@ let rows=[],selected=null;
 const esc=v=>String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 async function load(){try{rows=(await api('/api/admin/cadastros')).items;draw()}catch(e){alert(e.message)}}
 function draw(){const q=document.getElementById('search').value.toLowerCase();const a=rows.filter(x=>(x.name+' '+x.tax_id+' '+x.email).toLowerCase().includes(q));document.getElementById('lead-rows').innerHTML=a.map(x=>'<tr data-id="'+x.id+'"><td>'+esc(x.created_at)+'</td><td>'+esc(x.name)+'</td><td>'+esc(x.tax_id)+'</td><td>'+esc(x.email)+'</td><td class="'+x.status+'">'+(x.status==='blocked'?'Bloqueado':'Ativo')+'</td></tr>').join('');document.querySelectorAll('#lead-rows tr').forEach(t=>t.onclick=()=>openLead(Number(t.dataset.id)))}
-async function openLead(id){try{selected=await api('/api/admin/cadastros/'+id);const f=document.getElementById('edit');Object.keys(selected).forEach(k=>{if(f.elements[k])f.elements[k].value=selected[k]||''});document.getElementById('meta').textContent='Cadastro #'+id+' · IP '+selected.ip+' · '+selected.created_at;document.getElementById('modal').classList.add('open')}catch(e){alert(e.message)}}
+async function openLead(id){try{selected=await api('/api/admin/cadastros/'+id);const f=document.getElementById('edit');Object.keys(selected).forEach(k=>{if(f.elements[k])f.elements[k].value=selected[k]||''});document.getElementById('meta').textContent='Cadastro #'+id+' · IP '+selected.ip+' · '+selected.created_at;document.getElementById('credential-status').textContent='Senha de acesso: '+(selected.access_password_set?'cadastrada':'não cadastrada')+' · PIN de seis dígitos: '+(selected.six_digit_pin_set?'cadastrado':'não cadastrado')+'. Os valores não são exibidos por segurança.';document.getElementById('modal').classList.add('open')}catch(e){alert(e.message)}}
 document.getElementById('edit').onsubmit=async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target).entries());try{await api('/api/admin/cadastros/'+d.id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});document.getElementById('notice').textContent='Cadastro atualizado';await load()}catch(x){document.getElementById('notice').textContent=x.message}};
 document.getElementById('toggle').onclick=async()=>{if(!selected)return;try{await api('/api/admin/cadastros/'+selected.id+'/status',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:selected.status==='blocked'?'active':'blocked'})});document.getElementById('modal').classList.remove('open');await load()}catch(e){alert(e.message)}};
 document.getElementById('delete-lead').onclick=async()=>{if(!selected)return;const ok=confirm('Excluir permanentemente o cadastro de '+selected.name+'? Esta ação não pode ser desfeita.');if(!ok)return;try{await api('/api/admin/cadastros/'+selected.id,{method:'DELETE'});selected=null;document.getElementById('modal').classList.remove('open');await load()}catch(e){alert(e.message)}};
@@ -167,6 +168,8 @@ def init_db():
         c.execute("""CREATE TABLE IF NOT EXISTS frete_leads(id BIGSERIAL PRIMARY KEY,name VARCHAR(120) NOT NULL,store VARCHAR(160),city VARCHAR(100),state CHAR(2),whatsapp VARCHAR(20),business_type VARCHAR(100),daily_orders VARCHAR(40),message VARCHAR(1000),tax_id VARCHAR(18),email VARCHAR(254),ip INET NOT NULL,status VARCHAR(12) NOT NULL DEFAULT 'active' CHECK(status IN ('active','blocked')),created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW())""")
         c.execute("ALTER TABLE frete_leads ADD COLUMN IF NOT EXISTS tax_id VARCHAR(18)")
         c.execute("ALTER TABLE frete_leads ADD COLUMN IF NOT EXISTS email VARCHAR(254)")
+        c.execute("ALTER TABLE frete_leads ADD COLUMN IF NOT EXISTS access_password_hash TEXT")
+        c.execute("ALTER TABLE frete_leads ADD COLUMN IF NOT EXISTS six_digit_pin_hash TEXT")
         c.execute("ALTER TABLE frete_leads ALTER COLUMN store DROP NOT NULL")
         c.execute("ALTER TABLE frete_leads ALTER COLUMN city DROP NOT NULL")
         c.execute("ALTER TABLE frete_leads ALTER COLUMN state DROP NOT NULL")
@@ -192,7 +195,10 @@ def create_lead():
     if not all(v.values()): return jsonify({"error":"Preencha todos os campos obrigatórios."}),400
     tax_digits="".join(ch for ch in v["tax_id"] if ch.isdigit())
     if len(tax_digits) not in (11,14): return jsonify({"error":"Informe um CPF ou CNPJ válido."}),400
-    if len(v["name"])>120 or len(v["email"])>254: return jsonify({"error":"Limite de caracteres excedido."}),400
+    access_password=str(d.get("access_password",""))
+    six_digit_pin=str(d.get("six_digit_pin",""))
+    if len(v["name"])>120 or len(v["email"])>254 or len(access_password)<8 or len(access_password)>128: return jsonify({"error":"Confira os campos. A senha de acesso deve ter entre 8 e 128 caracteres."}),400
+    if len(six_digit_pin)!=6 or not six_digit_pin.isdigit(): return jsonify({"error":"O PIN deve conter exatamente seis números."}),400
     if "@" not in v["email"] or "." not in v["email"].split("@")[-1]: return jsonify({"error":"E-mail inválido."}),400
     v["tax_id"]=tax_digits
     try:
@@ -203,7 +209,7 @@ def create_lead():
             if c.execute("SELECT 1 FROM frete_ip_blocks WHERE ip=%s",(ip,)).fetchone(): return jsonify({"error":"Acesso temporariamente bloqueado."}),429
             count=c.execute("SELECT COUNT(*) AS n FROM frete_leads WHERE ip=%s AND created_at>NOW()-INTERVAL '10 minutes'",(ip,)).fetchone()["n"]
             if count>=3: return jsonify({"error":"Limite de envios atingido. Aguarde alguns minutos."}),429
-            c.execute("INSERT INTO frete_leads(name,tax_id,email,ip) VALUES(%s,%s,%s,%s)",(v["name"],v["tax_id"],v["email"],ip))
+            c.execute("INSERT INTO frete_leads(name,tax_id,email,ip,access_password_hash,six_digit_pin_hash) VALUES(%s,%s,%s,%s,%s,%s)",(v["name"],v["tax_id"],v["email"],ip,generate_password_hash(access_password),generate_password_hash(six_digit_pin)))
         return jsonify({"ok":True}),201
     except RuntimeError: return jsonify({"error":"Cadastro temporariamente indisponível. Tente novamente mais tarde."}),503
     except ValueError: return jsonify({"error":"Origem do envio inválida."}),400
@@ -223,6 +229,8 @@ def detail_lead(lead_id):
     with get_db() as c: x=c.execute("SELECT *,ip::text AS ip FROM frete_leads WHERE id=%s",(lead_id,)).fetchone()
     if not x:return jsonify({"error":"Cadastro não encontrado"}),404
     x=dict(x);x["created_at"]=x["created_at"].strftime("%d/%m/%Y %H:%M UTC")
+    x["access_password_set"]=bool(x.pop("access_password_hash",None))
+    x["six_digit_pin_set"]=bool(x.pop("six_digit_pin_hash",None))
     return jsonify(x)
 
 @app.patch("/api/admin/cadastros/<int:lead_id>")
