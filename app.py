@@ -164,6 +164,11 @@ def init_db():
         c.execute("""CREATE TABLE IF NOT EXISTS frete_leads(id BIGSERIAL PRIMARY KEY,name VARCHAR(120) NOT NULL,store VARCHAR(160),city VARCHAR(100),state CHAR(2),whatsapp VARCHAR(20),business_type VARCHAR(100),daily_orders VARCHAR(40),message VARCHAR(1000),tax_id VARCHAR(18),email VARCHAR(254),ip INET NOT NULL,status VARCHAR(12) NOT NULL DEFAULT 'active' CHECK(status IN ('active','blocked')),created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW())""")
         c.execute("ALTER TABLE frete_leads ADD COLUMN IF NOT EXISTS tax_id VARCHAR(18)")
         c.execute("ALTER TABLE frete_leads ADD COLUMN IF NOT EXISTS email VARCHAR(254)")
+        c.execute("ALTER TABLE frete_leads ALTER COLUMN store DROP NOT NULL")
+        c.execute("ALTER TABLE frete_leads ALTER COLUMN city DROP NOT NULL")
+        c.execute("ALTER TABLE frete_leads ALTER COLUMN state DROP NOT NULL")
+        c.execute("ALTER TABLE frete_leads ALTER COLUMN whatsapp DROP NOT NULL")
+        c.execute("ALTER TABLE frete_leads ALTER COLUMN business_type DROP NOT NULL")
         c.execute("CREATE INDEX IF NOT EXISTS idx_frete_leads_ip_created ON frete_leads(ip,created_at DESC)")
         c.execute("""CREATE TABLE IF NOT EXISTS frete_ip_blocks(ip INET PRIMARY KEY,reason VARCHAR(250) NOT NULL,created_at TIMESTAMPTZ NOT NULL DEFAULT NOW())""")
 
