@@ -1,5 +1,11 @@
 import os
 from functools import wraps
+import ipaddress
+import secrets
+from datetime import timezone
+import psycopg
+from psycopg.rows import dict_row
+from flask import abort
 from flask import Flask, jsonify, request, session, redirect, url_for, render_template_string
 
 app = Flask(__name__)
@@ -9,6 +15,7 @@ app.config.update(
     SESSION_COOKIE_SECURE=True,
     SESSION_COOKIE_SAMESITE="Lax",
     PERMANENT_SESSION_LIFETIME=60 * 60 * 12,
+    MAX_CONTENT_LENGTH=32 * 1024,
 )
 
 PAGE = r"""<!doctype html>
@@ -37,6 +44,7 @@ nav{display:flex;gap:9px;align-items:center;flex-wrap:wrap}nav a{display:inline-
 .steps{background:var(--paper)}.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.step{background:#fff;border-radius:18px;padding:24px;border:1px solid #e2ebe5}.step-num{font-size:12px;font-weight:900;color:#568500;letter-spacing:1px}.step h3{color:var(--deep);margin:10px 0 8px}.step p{color:var(--muted);line-height:1.6;margin:0}
 .cta{background:linear-gradient(120deg,#e9f5ed,#f4f8f4);border:1px solid #dcebe1;border-radius:26px;padding:34px;display:flex;align-items:center;justify-content:space-between;gap:24px}.cta h2{color:var(--deep);font-size:clamp(26px,4vw,36px);margin:8px 0}.cta p{color:var(--muted);line-height:1.6;margin:0}.cta .eyebrow{color:#568500}
 footer{background:var(--deep);color:#d6e5dc;padding:30px 22px;text-align:center;font-size:13px}
+.lead-form{max-width:850px;margin:auto;padding:28px;background:#f7faf8;border:1px solid #dfebe3;border-radius:22px}.lead-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.lead-grid label{display:grid;gap:7px;color:var(--deep);font-size:13px;font-weight:800}.lead-grid input,.lead-grid select,.lead-grid textarea{width:100%;padding:13px;border:1px solid #d3e2d8;border-radius:11px;background:white;font:inherit}.lead-wide{grid-column:1/-1}.lead-consent{display:flex;gap:10px;margin:18px 0;color:var(--muted);font-size:13px}.lead-hp{position:absolute;left:-10000px}.lead-feedback{font-weight:700;min-height:22px}@media(max-width:600px){.lead-grid{grid-template-columns:1fr}.lead-wide{grid-column:auto}.lead-form{padding:18px}}
 @media(max-width:800px){.hero-in{grid-template-columns:1fr;padding-top:60px}.hero-art{min-height:250px}.trust-in{grid-template-columns:1fr 1fr}.services{grid-template-columns:1fr}.steps-grid{grid-template-columns:1fr}.control-grid,.support-grid{grid-template-columns:1fr}.results-grid{grid-template-columns:1fr}.cta{display:block}.cta .btn{margin-top:20px}}
 @media(max-width:520px){.nav{padding:12px 14px;gap:8px}.brand{font-size:17px;gap:6px}.brand-stone-logo{width:58px}nav{gap:5px}nav a{min-height:37px;padding:8px 10px;font-size:12px}.hero h1{letter-spacing:-1.8px}.hero-in{padding-left:18px;padding-right:18px}.trust-in{padding:18px;gap:12px}.trust-item{font-size:12px}.trust-icon{width:30px;height:30px;flex-basis:30px}.wrap{padding:55px 18px}.cta{padding:25px}}
 </style></head>
@@ -68,9 +76,18 @@ footer{background:var(--deep);color:#d6e5dc;padding:30px 22px;text-align:center;
 <div class="results-grid"><article class="metric"><div class="metric-value">−28%</div><h3>nos custos de frete</h3><p>O tamanho da Stone e o acesso a mais de 10 transportadoras ajudam a encontrar preços competitivos para cada envio.</p></article><article class="metric"><div class="metric-value">+24%</div><h3>na taxa de conversão</h3><p>Entregando em mais lugares, mais rápido e mais barato, mais clientes podem concluir a compra no checkout.</p></article></div><div class="results-note">Indicadores de resultado divulgados pela Stone Entrega.</div>
 </div></section>
 <section class="steps" id="como-funciona"><div class="wrap"><div class="section-head"><div class="eyebrow">Simples para sua rotina</div><h2>Mais facilidade do pedido à entrega</h2><p>Organize os envios da sua loja com uma operação conectada e acompanhamento em cada etapa.</p></div><div class="steps-grid"><article class="step"><div class="step-num">01 · PREPARE</div><h3>Venda e prepare o pedido</h3><p>Continue vendendo pelos seus canais e deixe o pacote pronto para envio.</p></article><article class="step"><div class="step-num">02 · ENVIE</div><h3>Escolha a modalidade</h3><p>Conte com opções locais e nacionais para atender cada destino.</p></article><article class="step"><div class="step-num">03 · ACOMPANHE</div><h3>Rastreie a entrega</h3><p>Acompanhe o andamento do pedido e mantenha seu cliente informado.</p></article></div></div></section>
-<section class="wrap" id="cadastro"><div class="cta"><div><div class="eyebrow">Comece hoje</div><h2>Sua loja pronta para entregar mais.</h2><p>Entre em contato para conhecer as opções de entrega para o seu negócio.</p></div><a class="btn" href="mailto:contato@ston.eco?subject=Quero%20conhecer%20o%20Frete%20Stone">Tenho interesse <span aria-hidden="true">→</span></a></div></section>
+<section class="wrap" id="cadastro"><div class="section-head"><div class="eyebrow">Comece hoje</div><h2>Cadastre sua loja</h2><p>Preencha os dados para nossa equipe entrar em contato.</p></div>
+<form id="lead-form" class="lead-form"><div class="lead-grid">
+<label>Nome do responsável *<input name="name" maxlength="120" required></label><label>Nome da loja ou empresa *<input name="store" maxlength="160" required></label>
+<label>Cidade *<input name="city" maxlength="100" required></label><label>Estado *<select name="state" required><option value="">Selecione</option><option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option><option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option><option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option><option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option><option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option><option>SE</option><option>TO</option></select></label>
+<label>WhatsApp com DDD *<input name="whatsapp" maxlength="20" required inputmode="tel" placeholder="(00) 00000-0000"></label><label>Tipo de negócio *<select name="business_type" required><option value="">Selecione</option><option>Loja física</option><option>E-commerce</option><option>Mercado / mercearia</option><option>Papelaria</option><option>Moda / vestuário</option><option>Outro comércio</option></select></label>
+<label>Pedidos por dia<select name="daily_orders"><option value="">Selecione</option><option>Até 5</option><option>6 a 10</option><option>11 a 30</option><option>31 a 50</option><option>Mais de 50</option></select></label>
+<label class="lead-wide">Sobre sua operação (opcional)<textarea name="message" rows="3" maxlength="1000"></textarea></label>
+<label class="lead-hp">Não preencher<input name="website" tabindex="-1" autocomplete="off"></label></div>
+<label class="lead-consent"><input type="checkbox" name="consent" required> Autorizo o contato da equipe Frete Stone sobre este cadastro.</label>
+<button class="btn" type="submit">Enviar cadastro →</button><p id="lead-feedback" role="status"></p></form></section>
 </main><footer>Frete Stone · Soluções de entrega para o seu negócio</footer>
-</body></html>"""
+<script>(()=>{const f=document.getElementById('lead-form');if(!f)return;f.addEventListener('submit',async e=>{e.preventDefault();const b=f.querySelector('button'),m=document.getElementById('lead-feedback');b.disabled=true;b.textContent='Enviando...';const d=Object.fromEntries(new FormData(f).entries());d.consent=f.querySelector('[name=consent]').checked;try{const r=await fetch('/api/cadastro',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});const x=await r.json();if(!r.ok)throw Error(x.error||'Falha no envio');f.reset();m.textContent='Cadastro enviado com sucesso! Nossa equipe entrará em contato.';}catch(x){m.textContent=x.message;}finally{b.disabled=false;b.textContent='Enviar cadastro →';}});})();</script></body></html>"""
 
 ADMIN = r"""<!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Administração · Frete Stone</title>
 <style>body{margin:0;font-family:Arial,sans-serif;background:#f3f7f4;color:#163528}.box{max-width:420px;margin:10vh auto;background:white;padding:30px;border-radius:20px;box-shadow:0 18px 55px #00351d18}h1{color:#043c27}label{display:block;font-weight:bold;font-size:13px;margin:15px 0 7px}input{width:100%;padding:13px;border:1px solid #d7e2da;border-radius:10px;box-sizing:border-box}button{margin-top:20px;width:100%;padding:14px;background:#9eff00;border:0;border-radius:10px;font-weight:bold;cursor:pointer}.err{color:#b42318}</style>
@@ -111,10 +128,145 @@ def admin():
             error = "E-mail ou senha inválidos."
     return render_template_string(ADMIN, error=error)
 
+ADMIN_DASHBOARD = r"""<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Painel Frete Stone</title><style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f2f6f3;color:#173b2b}.top{background:#043c27;color:white;padding:20px 4%;display:flex;justify-content:space-between}.top button,.btn{background:#9eff00;color:#043c27;border:0;border-radius:9px;padding:11px 16px;font-weight:bold;cursor:pointer}.shell{max-width:1200px;margin:25px auto;padding:0 16px}.tabs{display:flex;gap:10px;margin-bottom:15px}.tabs button{padding:12px 18px;border:1px solid #d5e4da;border-radius:10px;background:white;color:#075334;font-weight:bold}.tabs .active{background:#075334;color:white}.panel{background:white;border:1px solid #e0eae3;border-radius:15px;padding:18px}.toolbar{display:flex;gap:9px;margin-bottom:14px;flex-wrap:wrap}.toolbar input{flex:1;min-width:180px;padding:11px;border:1px solid #d5e4da;border-radius:8px}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:700px}th,td{text-align:left;padding:11px;border-bottom:1px solid #e8eee9;font-size:13px}tr[data-id]{cursor:pointer}tr[data-id]:hover{background:#f2f9f4}.active{color:#087443}.blocked{color:#b42318}.modal{position:fixed;inset:0;background:#001c1277;display:none;align-items:center;justify-content:center;padding:15px}.modal.open{display:flex}.dialog{width:min(700px,100%);max-height:90vh;overflow:auto;background:white;border-radius:15px;padding:22px}.close{float:right}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.fields label{display:grid;gap:5px;font-size:13px;font-weight:bold}.fields input,.fields textarea,.fields select{padding:10px;border:1px solid #d5e4da;border-radius:8px}.wide{grid-column:1/-1}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.actions button{padding:10px;border:0;border-radius:8px;cursor:pointer;font-weight:bold}.danger{background:#fee4e2;color:#b42318}.notice{color:#b42318}@media(max-width:600px){.fields{grid-template-columns:1fr}.wide{grid-column:auto}}
+</style></head><body><header class="top"><h2>FRETE STONE · PAINEL ADMINISTRATIVO</h2><form method="post" action="/admin/sair"><button>Sair</button></form></header>
+<main class="shell"><div class="tabs"><button class="active" data-tab="leads">Cadastros</button><button data-tab="ips">IPs bloqueados</button></div>
+<section class="panel" id="leads-panel"><div class="toolbar"><input id="search" placeholder="Buscar nome, loja, cidade ou WhatsApp"><button class="btn" id="refresh">Atualizar</button></div><div class="table-wrap"><table><thead><tr><th>Data</th><th>Responsável</th><th>Loja</th><th>Cidade/UF</th><th>WhatsApp</th><th>Status</th></tr></thead><tbody id="lead-rows"></tbody></table></div></section>
+<section class="panel" id="ips-panel" hidden><div class="toolbar"><input id="ip-address" placeholder="Endereço IP"><input id="ip-reason" placeholder="Motivo do bloqueio"><button class="btn" id="block-ip">Bloquear IP</button></div><div class="table-wrap"><table><thead><tr><th>IP</th><th>Motivo</th><th>Data</th><th></th></tr></thead><tbody id="ip-rows"></tbody></table></div></section></main>
+<div class="modal" id="modal"><div class="dialog"><button class="close" id="close">Fechar ×</button><h2>Detalhes do cadastro</h2><p id="meta"></p><form id="edit"><input type="hidden" name="id"><div class="fields">
+<label>Responsável<input name="name" required></label><label>Loja<input name="store" required></label><label>Cidade<input name="city" required></label><label>Estado<input name="state" required></label><label>WhatsApp<input name="whatsapp" required></label><label>Tipo de negócio<input name="business_type"></label><label>Pedidos/dia<input name="daily_orders"></label><label>Status<select name="status"><option value="active">Ativo</option><option value="blocked">Bloqueado</option></select></label><label class="wide">Observações<textarea name="message" rows="3"></textarea></label></div>
+<div class="actions"><button class="btn" type="submit">Salvar alterações</button><button type="button" id="toggle">Bloquear / desbloquear</button><button type="button" class="danger" id="block-lead-ip">Bloquear IP deste cadastro</button></div><p id="notice" class="notice"></p></form></div></div>
+<script>
+const csrf={{ csrf_token|tojson }};
+async function api(url,opt={}){opt.headers=Object.assign({},opt.headers||{}, {'X-CSRF-Token':csrf});const r=await fetch(url,opt);const j=await r.json();if(!r.ok)throw Error(j.error||'Falha');return j}
+let rows=[],selected=null;
+const esc=v=>String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+async function load(){try{rows=(await api('/api/admin/cadastros')).items;draw()}catch(e){alert(e.message)}}
+function draw(){const q=document.getElementById('search').value.toLowerCase();const a=rows.filter(x=>(x.name+' '+x.store+' '+x.city+' '+x.whatsapp).toLowerCase().includes(q));document.getElementById('lead-rows').innerHTML=a.map(x=>'<tr data-id="'+x.id+'"><td>'+esc(x.created_at)+'</td><td>'+esc(x.name)+'</td><td>'+esc(x.store)+'</td><td>'+esc(x.city)+'/'+esc(x.state)+'</td><td>'+esc(x.whatsapp)+'</td><td class="'+x.status+'">'+(x.status==='blocked'?'Bloqueado':'Ativo')+'</td></tr>').join('');document.querySelectorAll('#lead-rows tr').forEach(t=>t.onclick=()=>openLead(Number(t.dataset.id)))}
+async function openLead(id){try{selected=await api('/api/admin/cadastros/'+id);const f=document.getElementById('edit');Object.keys(selected).forEach(k=>{if(f.elements[k])f.elements[k].value=selected[k]||''});document.getElementById('meta').textContent='Cadastro #'+id+' · IP '+selected.ip+' · '+selected.created_at;document.getElementById('modal').classList.add('open')}catch(e){alert(e.message)}}
+document.getElementById('edit').onsubmit=async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target).entries());try{await api('/api/admin/cadastros/'+d.id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});document.getElementById('notice').textContent='Cadastro atualizado';await load()}catch(x){document.getElementById('notice').textContent=x.message}};
+document.getElementById('toggle').onclick=async()=>{if(!selected)return;try{await api('/api/admin/cadastros/'+selected.id+'/status',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:selected.status==='blocked'?'active':'blocked'})});document.getElementById('modal').classList.remove('open');await load()}catch(e){alert(e.message)}};
+document.getElementById('block-lead-ip').onclick=async()=>{if(!selected)return;const reason=prompt('Motivo do bloqueio','Spam ou envios repetidos');if(reason===null)return;try{await api('/api/admin/ips',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ip:selected.ip,reason})});alert('IP bloqueado');await loadIps()}catch(e){alert(e.message)}};
+async function loadIps(){const d=await api('/api/admin/ips');document.getElementById('ip-rows').innerHTML=d.items.map(x=>'<tr><td>'+esc(x.ip)+'</td><td>'+esc(x.reason)+'</td><td>'+esc(x.created_at)+'</td><td><button data-ip="'+esc(x.ip)+'">Desbloquear</button></td></tr>').join('');document.querySelectorAll('#ip-rows button').forEach(b=>b.onclick=async()=>{await api('/api/admin/ips/'+encodeURIComponent(b.dataset.ip),{method:'DELETE'});loadIps()})}
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));document.getElementById('leads-panel').hidden=b.dataset.tab!=='leads';document.getElementById('ips-panel').hidden=b.dataset.tab!=='ips';if(b.dataset.tab==='ips')loadIps()});
+document.getElementById('refresh').onclick=load;document.getElementById('search').oninput=draw;document.getElementById('close').onclick=()=>document.getElementById('modal').classList.remove('open');
+document.getElementById('block-ip').onclick=async()=>{try{await api('/api/admin/ips',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ip:document.getElementById('ip-address').value,reason:document.getElementById('ip-reason').value})});loadIps()}catch(e){alert(e.message)}};
+load();
+</script></body></html>"""
+
+def get_db():
+    url=os.getenv("DATABASE_URL","").strip()
+    if not url: raise RuntimeError("DATABASE_URL não configurada")
+    if url.startswith("postgres://"): url="postgresql://"+url[11:]
+    return psycopg.connect(url,row_factory=dict_row,connect_timeout=5)
+
+def init_db():
+    with get_db() as c:
+        c.execute("""CREATE TABLE IF NOT EXISTS frete_leads(id BIGSERIAL PRIMARY KEY,name VARCHAR(120) NOT NULL,store VARCHAR(160) NOT NULL,city VARCHAR(100) NOT NULL,state CHAR(2) NOT NULL,whatsapp VARCHAR(20) NOT NULL,business_type VARCHAR(100) NOT NULL,daily_orders VARCHAR(40),message VARCHAR(1000),ip INET NOT NULL,status VARCHAR(12) NOT NULL DEFAULT 'active' CHECK(status IN ('active','blocked')),created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW())""")
+        c.execute("CREATE INDEX IF NOT EXISTS idx_frete_leads_ip_created ON frete_leads(ip,created_at DESC)")
+        c.execute("""CREATE TABLE IF NOT EXISTS frete_ip_blocks(ip INET PRIMARY KEY,reason VARCHAR(250) NOT NULL,created_at TIMESTAMPTZ NOT NULL DEFAULT NOW())""")
+
+def get_client_ip():
+    raw=request.headers.get("X-Forwarded-For",request.remote_addr or "").split(",")[0].strip()
+    return str(ipaddress.ip_address(raw))
+
+def csrf_check():
+    if not secrets.compare_digest(request.headers.get("X-CSRF-Token",""),session.get("csrf_token","")): abort(403)
+
+@app.post("/api/cadastro")
+def create_lead():
+    d=request.get_json(silent=True) or {}
+    if d.get("website"): return jsonify({"error":"Não foi possível validar o cadastro."}),400
+    if d.get("consent") is not True: return jsonify({"error":"Autorize o contato para enviar o cadastro."}),400
+    keys=("name","store","city","state","whatsapp","business_type","daily_orders","message")
+    v={k:str(d.get(k,"")).strip() for k in keys}
+    if not all(v[k] for k in keys[:6]): return jsonify({"error":"Preencha os campos obrigatórios."}),400
+    if any(len(v[k])>n for k,n in (("name",120),("store",160),("city",100),("whatsapp",20),("message",1000))): return jsonify({"error":"Limite de caracteres excedido."}),400
+    if not v["whatsapp"].replace("+","").replace("(","").replace(")","").replace("-","").replace(" ","").isdigit(): return jsonify({"error":"WhatsApp inválido."}),400
+    try:
+        ip=get_client_ip()
+        with get_db() as c:
+            if c.execute("SELECT 1 FROM frete_ip_blocks WHERE ip=%s",(ip,)).fetchone(): return jsonify({"error":"Acesso temporariamente bloqueado."}),429
+            count=c.execute("SELECT COUNT(*) AS n FROM frete_leads WHERE ip=%s AND created_at>NOW()-INTERVAL '10 minutes'",(ip,)).fetchone()["n"]
+            if count>=3: return jsonify({"error":"Limite de envios atingido. Aguarde alguns minutos."}),429
+            c.execute("INSERT INTO frete_leads(name,store,city,state,whatsapp,business_type,daily_orders,message,ip) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)",(v["name"],v["store"],v["city"],v["state"].upper(),v["whatsapp"],v["business_type"],v["daily_orders"],v["message"],ip))
+        return jsonify({"ok":True}),201
+    except RuntimeError: return jsonify({"error":"Cadastro temporariamente indisponível. Tente novamente mais tarde."}),503
+    except ValueError: return jsonify({"error":"Origem do envio inválida."}),400
+    except Exception:
+        app.logger.exception("Erro ao registrar cadastro")
+        return jsonify({"error":"Erro interno ao receber cadastro."}),500
+
+@app.get("/api/admin/cadastros")
+@admin_required
+def list_leads():
+    with get_db() as c: rows=c.execute("SELECT id,name,store,city,state,whatsapp,status,created_at FROM frete_leads ORDER BY created_at DESC LIMIT 1000").fetchall()
+    return jsonify({"items":[{**dict(x),"created_at":x["created_at"].strftime("%d/%m/%Y %H:%M UTC")} for x in rows]})
+
+@app.get("/api/admin/cadastros/<int:lead_id>")
+@admin_required
+def detail_lead(lead_id):
+    with get_db() as c: x=c.execute("SELECT *,ip::text AS ip FROM frete_leads WHERE id=%s",(lead_id,)).fetchone()
+    if not x:return jsonify({"error":"Cadastro não encontrado"}),404
+    x=dict(x);x["created_at"]=x["created_at"].strftime("%d/%m/%Y %H:%M UTC")
+    return jsonify(x)
+
+@app.patch("/api/admin/cadastros/<int:lead_id>")
+@admin_required
+def edit_lead(lead_id):
+    csrf_check();d=request.get_json(silent=True) or {};ks=("name","store","city","state","whatsapp","business_type","daily_orders","message","status");v={k:str(d.get(k,"")).strip() for k in ks}
+    if v["status"] not in ("active","blocked") or not all(v[k] for k in ks[:6]):return jsonify({"error":"Dados inválidos"}),400
+    with get_db() as c:
+        q=c.execute("UPDATE frete_leads SET name=%s,store=%s,city=%s,state=%s,whatsapp=%s,business_type=%s,daily_orders=%s,message=%s,status=%s,updated_at=NOW() WHERE id=%s",(v["name"][:120],v["store"][:160],v["city"][:100],v["state"][:2].upper(),v["whatsapp"][:20],v["business_type"][:100],v["daily_orders"][:40],v["message"][:1000],v["status"],lead_id))
+    if not q.rowcount:return jsonify({"error":"Cadastro não encontrado"}),404
+    return jsonify({"ok":True})
+
+@app.post("/api/admin/cadastros/<int:lead_id>/status")
+@admin_required
+def lead_status(lead_id):
+    csrf_check();d=request.get_json(silent=True) or {};st=d.get("status")
+    if st not in ("active","blocked"):return jsonify({"error":"Status inválido"}),400
+    with get_db() as c:q=c.execute("UPDATE frete_leads SET status=%s,updated_at=NOW() WHERE id=%s",(st,lead_id))
+    if not q.rowcount:return jsonify({"error":"Cadastro não encontrado"}),404
+    return jsonify({"ok":True})
+
+@app.get("/api/admin/ips")
+@admin_required
+def ips_list():
+    with get_db() as c:xs=c.execute("SELECT ip::text AS ip,reason,created_at FROM frete_ip_blocks ORDER BY created_at DESC").fetchall()
+    return jsonify({"items":[{**dict(x),"created_at":x["created_at"].strftime("%d/%m/%Y %H:%M UTC")} for x in xs]})
+
+@app.post("/api/admin/ips")
+@admin_required
+def ips_block():
+    csrf_check();d=request.get_json(silent=True) or {}
+    try:ip=str(ipaddress.ip_address(str(d.get("ip","")).strip()))
+    except ValueError:return jsonify({"error":"IP inválido"}),400
+    reason=str(d.get("reason","Bloqueio administrativo")).strip()[:250] or "Bloqueio administrativo"
+    with get_db() as c:c.execute("INSERT INTO frete_ip_blocks(ip,reason) VALUES(%s,%s) ON CONFLICT(ip) DO UPDATE SET reason=EXCLUDED.reason,created_at=NOW()",(ip,reason))
+    return jsonify({"ok":True})
+
+@app.delete("/api/admin/ips/<path:ip_value>")
+@admin_required
+def ips_unblock(ip_value):
+    csrf_check()
+    try:ip=str(ipaddress.ip_address(ip_value))
+    except ValueError:return jsonify({"error":"IP inválido"}),400
+    with get_db() as c:c.execute("DELETE FROM frete_ip_blocks WHERE ip=%s",(ip,))
+    return jsonify({"ok":True})
+
 @app.get("/admin/painel")
 @admin_required
 def admin_dashboard():
-    return """<!doctype html><html lang='pt-BR'><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Painel Frete Stone</title><body style='font-family:Arial;background:#f3f7f4;color:#043c27;padding:40px'><h1>FRETE STONE · ADMIN MASTER</h1><p>Autenticação confirmada. A estrutura de gestão será conectada ao banco de dados na próxima etapa.</p><form method='post' action='/admin/sair'><button>Sair</button></form></body></html>"""
+    if not os.getenv("DATABASE_URL"): return "Banco Frete Stone não configurado. Configure DATABASE_URL no Render.",503
+    if "csrf_token" not in session:session["csrf_token"]=secrets.token_urlsafe(32)
+    try:init_db()
+    except Exception:
+        app.logger.exception("Falha ao inicializar banco Frete Stone")
+        return "Não foi possível conectar ao banco de dados Frete Stone.",503
+    return render_template_string(ADMIN_DASHBOARD,csrf_token=session["csrf_token"])
+
 
 @app.post("/admin/sair")
 def admin_logout():
