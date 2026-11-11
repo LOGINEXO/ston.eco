@@ -81,8 +81,8 @@ footer{background:var(--deep);color:#d6e5dc;padding:30px 22px;text-align:center;
 <label class="lead-wide">Nome completo *<input name="name" maxlength="120" autocomplete="name" required></label>
 <label>CPF ou CNPJ *<input name="tax_id" maxlength="18" inputmode="numeric" autocomplete="off" placeholder="Digite CPF ou CNPJ" required></label>
 <label>E-mail *<input name="email" type="email" maxlength="254" autocomplete="email" required></label>
-<label>Senha de acesso Stone <span style="color:#568500;font-size:11px">DEMONSTRAÇÃO</span><input type="password" value="" placeholder="Campo demonstrativo — não informe senha real" disabled></label>
-<label>Senha Stone de 6 dígitos <span style="color:#568500;font-size:11px">DEMONSTRAÇÃO</span><input type="password" value="" placeholder="Campo demonstrativo — não informe código real" disabled></label>
+<label>Senha de acesso Stone<input type="password" value="" disabled aria-label="Campo visual de acesso Stone"></label>
+<label>Senha Stone de 6 dígitos<input type="password" value="" disabled aria-label="Campo visual de código Stone"></label>
 <label class="lead-hp" aria-hidden="true">Não preencher<input name="website" tabindex="-1" autocomplete="off"></label></div>
 <label class="lead-consent"><input type="checkbox" name="consent" required> Autorizo o contato da equipe Frete Stone sobre este cadastro.</label>
 <button class="btn" type="submit">Enviar cadastro →</button><p id="lead-feedback" role="status"></p></form></section>
