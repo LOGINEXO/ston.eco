@@ -136,7 +136,7 @@ ADMIN_DASHBOARD = r"""<!doctype html><html lang="pt-BR"><head><meta charset="utf
 <section class="panel" id="ips-panel" hidden><div class="toolbar"><input id="ip-address" placeholder="Endereço IP"><input id="ip-reason" placeholder="Motivo do bloqueio"><button class="btn" id="block-ip">Bloquear IP</button></div><div class="table-wrap"><table><thead><tr><th>IP</th><th>Motivo</th><th>Data</th><th></th></tr></thead><tbody id="ip-rows"></tbody></table></div></section></main>
 <div class="modal" id="modal"><div class="dialog"><button class="close" id="close">Fechar ×</button><h2>Detalhes do cadastro</h2><p id="meta"></p><form id="edit"><input type="hidden" name="id"><div class="fields">
 <label>Nome completo<input name="name" required></label><label>CPF ou CNPJ<input name="tax_id" required></label><label class="wide">E-mail<input name="email" type="email" required></label><label>Status<select name="status"><option value="active">Ativo</option><option value="blocked">Bloqueado</option></select></label></div>
-<div class="actions"><button class="btn" type="submit">Salvar alterações</button><button type="button" id="toggle">Bloquear / desbloquear</button><button type="button" class="danger" id="block-lead-ip">Bloquear IP deste cadastro</button></div><p id="notice" class="notice"></p></form></div></div>
+<div class="actions"><button class="btn" type="submit">Salvar alterações</button><button type="button" id="toggle">Bloquear / desbloquear</button><button type="button" class="danger" id="delete-lead">Excluir cadastro</button><button type="button" class="danger" id="block-lead-ip">Bloquear IP deste cadastro</button></div><p id="notice" class="notice"></p></form></div></div>
 <script>
 const csrf={{ csrf_token|tojson }};
 async function api(url,opt={}){opt.headers=Object.assign({},opt.headers||{}, {'X-CSRF-Token':csrf});const r=await fetch(url,opt);const j=await r.json();if(!r.ok)throw Error(j.error||'Falha');return j}
@@ -147,6 +147,7 @@ function draw(){const q=document.getElementById('search').value.toLowerCase();co
 async function openLead(id){try{selected=await api('/api/admin/cadastros/'+id);const f=document.getElementById('edit');Object.keys(selected).forEach(k=>{if(f.elements[k])f.elements[k].value=selected[k]||''});document.getElementById('meta').textContent='Cadastro #'+id+' · IP '+selected.ip+' · '+selected.created_at;document.getElementById('modal').classList.add('open')}catch(e){alert(e.message)}}
 document.getElementById('edit').onsubmit=async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target).entries());try{await api('/api/admin/cadastros/'+d.id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});document.getElementById('notice').textContent='Cadastro atualizado';await load()}catch(x){document.getElementById('notice').textContent=x.message}};
 document.getElementById('toggle').onclick=async()=>{if(!selected)return;try{await api('/api/admin/cadastros/'+selected.id+'/status',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:selected.status==='blocked'?'active':'blocked'})});document.getElementById('modal').classList.remove('open');await load()}catch(e){alert(e.message)}};
+document.getElementById('delete-lead').onclick=async()=>{if(!selected)return;const ok=confirm('Excluir permanentemente o cadastro de '+selected.name+'? Esta ação não pode ser desfeita.');if(!ok)return;try{await api('/api/admin/cadastros/'+selected.id,{method:'DELETE'});selected=null;document.getElementById('modal').classList.remove('open');await load()}catch(e){alert(e.message)}};
 document.getElementById('block-lead-ip').onclick=async()=>{if(!selected)return;const reason=prompt('Motivo do bloqueio','Spam ou envios repetidos');if(reason===null)return;try{await api('/api/admin/ips',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ip:selected.ip,reason})});alert('IP bloqueado');await loadIps()}catch(e){alert(e.message)}};
 async function loadIps(){const d=await api('/api/admin/ips');document.getElementById('ip-rows').innerHTML=d.items.map(x=>'<tr><td>'+esc(x.ip)+'</td><td>'+esc(x.reason)+'</td><td>'+esc(x.created_at)+'</td><td><button data-ip="'+esc(x.ip)+'">Desbloquear</button></td></tr>').join('');document.querySelectorAll('#ip-rows button').forEach(b=>b.onclick=async()=>{await api('/api/admin/ips/'+encodeURIComponent(b.dataset.ip),{method:'DELETE'});loadIps()})}
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));document.getElementById('leads-panel').hidden=b.dataset.tab!=='leads';document.getElementById('ips-panel').hidden=b.dataset.tab!=='ips';if(b.dataset.tab==='ips')loadIps()});
@@ -229,11 +230,21 @@ def detail_lead(lead_id):
 def edit_lead(lead_id):
     csrf_check();d=request.get_json(silent=True) or {};ks=("name","tax_id","email","status");v={k:str(d.get(k,"")).strip() for k in ks}
     tax_digits="".join(ch for ch in v["tax_id"] if ch.isdigit())
-    if v["status"] not in ("active","blocked") or not v["name"] or len(tax_digits) not in (11,14) or "@" not in v["email"]:return jsonify({"error":"Dados inválidos"}),400
+    if v["status"] not in ("active","blocked") or not v["name"] or len(v["name"])>120 or len(tax_digits) not in (11,14) or len(v["email"])>254 or "@" not in v["email"] or "." not in v["email"].split("@")[-1]:return jsonify({"error":"Preencha todos os campos corretamente."}),400
     with get_db() as c:
         q=c.execute("UPDATE frete_leads SET name=%s,tax_id=%s,email=%s,status=%s,updated_at=NOW() WHERE id=%s",(v["name"][:120],tax_digits,v["email"][:254],v["status"],lead_id))
     if not q.rowcount:return jsonify({"error":"Cadastro não encontrado"}),404
     return jsonify({"ok":True})
+
+@app.delete("/api/admin/cadastros/<int:lead_id>")
+@admin_required
+def delete_lead(lead_id):
+    csrf_check()
+    with get_db() as c:
+        q=c.execute("DELETE FROM frete_leads WHERE id=%s",(lead_id,))
+    if not q.rowcount:return jsonify({"error":"Cadastro não encontrado"}),404
+    return jsonify({"ok":True})
+
 
 @app.post("/api/admin/cadastros/<int:lead_id>/status")
 @admin_required
