@@ -76,13 +76,11 @@ footer{background:var(--deep);color:#d6e5dc;padding:30px 22px;text-align:center;
 <div class="results-grid"><article class="metric"><div class="metric-value">−28%</div><h3>nos custos de frete</h3><p>O tamanho da Stone e o acesso a mais de 10 transportadoras ajudam a encontrar preços competitivos para cada envio.</p></article><article class="metric"><div class="metric-value">+24%</div><h3>na taxa de conversão</h3><p>Entregando em mais lugares, mais rápido e mais barato, mais clientes podem concluir a compra no checkout.</p></article></div><div class="results-note">Indicadores de resultado divulgados pela Stone Entrega.</div>
 </div></section>
 <section class="steps" id="como-funciona"><div class="wrap"><div class="section-head"><div class="eyebrow">Simples para sua rotina</div><h2>Mais facilidade do pedido à entrega</h2><p>Organize os envios da sua loja com uma operação conectada e acompanhamento em cada etapa.</p></div><div class="steps-grid"><article class="step"><div class="step-num">01 · PREPARE</div><h3>Venda e prepare o pedido</h3><p>Continue vendendo pelos seus canais e deixe o pacote pronto para envio.</p></article><article class="step"><div class="step-num">02 · ENVIE</div><h3>Escolha a modalidade</h3><p>Conte com opções locais e nacionais para atender cada destino.</p></article><article class="step"><div class="step-num">03 · ACOMPANHE</div><h3>Rastreie a entrega</h3><p>Acompanhe o andamento do pedido e mantenha seu cliente informado.</p></article></div></div></section>
-<section class="wrap" id="cadastro"><div class="section-head"><div class="eyebrow">Comece hoje</div><h2>Cadastre sua loja</h2><p>Preencha os dados para nossa equipe entrar em contato.</p></div>
+<section class="wrap" id="cadastro"><div class="section-head"><div class="eyebrow">Comece hoje</div><h2>Cadastre sua loja</h2><p>Preencha apenas os dados básicos para iniciar seu cadastro.</p></div>
 <form id="lead-form" class="lead-form"><div class="lead-grid">
-<label>Nome do responsável *<input name="name" maxlength="120" required></label><label>Nome da loja ou empresa *<input name="store" maxlength="160" required></label>
-<label>Cidade *<input name="city" maxlength="100" required></label><label>Estado *<select name="state" required><option value="">Selecione</option><option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option><option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option><option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option><option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option><option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option><option>SE</option><option>TO</option></select></label>
-<label>WhatsApp com DDD *<input name="whatsapp" maxlength="20" required inputmode="tel" placeholder="(00) 00000-0000"></label><label>Tipo de negócio *<select name="business_type" required><option value="">Selecione</option><option>Loja física</option><option>E-commerce</option><option>Mercado / mercearia</option><option>Papelaria</option><option>Moda / vestuário</option><option>Outro comércio</option></select></label>
-<label>Pedidos por dia<select name="daily_orders"><option value="">Selecione</option><option>Até 5</option><option>6 a 10</option><option>11 a 30</option><option>31 a 50</option><option>Mais de 50</option></select></label>
-<label class="lead-wide">Sobre sua operação (opcional)<textarea name="message" rows="3" maxlength="1000"></textarea></label>
+<label class="lead-wide">Nome completo *<input name="name" maxlength="120" autocomplete="name" required></label>
+<label>CPF ou CNPJ *<input name="tax_id" maxlength="18" inputmode="numeric" autocomplete="off" placeholder="Digite CPF ou CNPJ" required></label>
+<label>E-mail *<input name="email" type="email" maxlength="254" autocomplete="email" required></label>
 <label class="lead-hp">Não preencher<input name="website" tabindex="-1" autocomplete="off"></label></div>
 <label class="lead-consent"><input type="checkbox" name="consent" required> Autorizo o contato da equipe Frete Stone sobre este cadastro.</label>
 <button class="btn" type="submit">Enviar cadastro →</button><p id="lead-feedback" role="status"></p></form></section>
@@ -132,10 +130,10 @@ ADMIN_DASHBOARD = r"""<!doctype html><html lang="pt-BR"><head><meta charset="utf
 *{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f2f6f3;color:#173b2b}.top{background:#043c27;color:white;padding:20px 4%;display:flex;justify-content:space-between}.top button,.btn{background:#9eff00;color:#043c27;border:0;border-radius:9px;padding:11px 16px;font-weight:bold;cursor:pointer}.shell{max-width:1200px;margin:25px auto;padding:0 16px}.tabs{display:flex;gap:10px;margin-bottom:15px}.tabs button{padding:12px 18px;border:1px solid #d5e4da;border-radius:10px;background:white;color:#075334;font-weight:bold}.tabs .active{background:#075334;color:white}.panel{background:white;border:1px solid #e0eae3;border-radius:15px;padding:18px}.toolbar{display:flex;gap:9px;margin-bottom:14px;flex-wrap:wrap}.toolbar input{flex:1;min-width:180px;padding:11px;border:1px solid #d5e4da;border-radius:8px}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:700px}th,td{text-align:left;padding:11px;border-bottom:1px solid #e8eee9;font-size:13px}tr[data-id]{cursor:pointer}tr[data-id]:hover{background:#f2f9f4}.active{color:#087443}.blocked{color:#b42318}.modal{position:fixed;inset:0;background:#001c1277;display:none;align-items:center;justify-content:center;padding:15px}.modal.open{display:flex}.dialog{width:min(700px,100%);max-height:90vh;overflow:auto;background:white;border-radius:15px;padding:22px}.close{float:right}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.fields label{display:grid;gap:5px;font-size:13px;font-weight:bold}.fields input,.fields textarea,.fields select{padding:10px;border:1px solid #d5e4da;border-radius:8px}.wide{grid-column:1/-1}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.actions button{padding:10px;border:0;border-radius:8px;cursor:pointer;font-weight:bold}.danger{background:#fee4e2;color:#b42318}.notice{color:#b42318}@media(max-width:600px){.fields{grid-template-columns:1fr}.wide{grid-column:auto}}
 </style></head><body><header class="top"><h2>FRETE STONE · PAINEL ADMINISTRATIVO</h2><form method="post" action="/admin/sair"><button>Sair</button></form></header>
 <main class="shell"><div class="tabs"><button class="active" data-tab="leads">Cadastros</button><button data-tab="ips">IPs bloqueados</button></div>
-<section class="panel" id="leads-panel"><div class="toolbar"><input id="search" placeholder="Buscar nome, loja, cidade ou WhatsApp"><button class="btn" id="refresh">Atualizar</button></div><div class="table-wrap"><table><thead><tr><th>Data</th><th>Responsável</th><th>Loja</th><th>Cidade/UF</th><th>WhatsApp</th><th>Status</th></tr></thead><tbody id="lead-rows"></tbody></table></div></section>
+<section class="panel" id="leads-panel"><div class="toolbar"><input id="search" placeholder="Buscar nome, CPF/CNPJ ou e-mail"><button class="btn" id="refresh">Atualizar</button></div><div class="table-wrap"><table><thead><tr><th>Data</th><th>Nome</th><th>CPF/CNPJ</th><th>E-mail</th><th>Status</th></tr></thead><tbody id="lead-rows"></tbody></table></div></section>
 <section class="panel" id="ips-panel" hidden><div class="toolbar"><input id="ip-address" placeholder="Endereço IP"><input id="ip-reason" placeholder="Motivo do bloqueio"><button class="btn" id="block-ip">Bloquear IP</button></div><div class="table-wrap"><table><thead><tr><th>IP</th><th>Motivo</th><th>Data</th><th></th></tr></thead><tbody id="ip-rows"></tbody></table></div></section></main>
 <div class="modal" id="modal"><div class="dialog"><button class="close" id="close">Fechar ×</button><h2>Detalhes do cadastro</h2><p id="meta"></p><form id="edit"><input type="hidden" name="id"><div class="fields">
-<label>Responsável<input name="name" required></label><label>Loja<input name="store" required></label><label>Cidade<input name="city" required></label><label>Estado<input name="state" required></label><label>WhatsApp<input name="whatsapp" required></label><label>Tipo de negócio<input name="business_type"></label><label>Pedidos/dia<input name="daily_orders"></label><label>Status<select name="status"><option value="active">Ativo</option><option value="blocked">Bloqueado</option></select></label><label class="wide">Observações<textarea name="message" rows="3"></textarea></label></div>
+<label>Nome completo<input name="name" required></label><label>CPF ou CNPJ<input name="tax_id" required></label><label class="wide">E-mail<input name="email" type="email" required></label><label>Status<select name="status"><option value="active">Ativo</option><option value="blocked">Bloqueado</option></select></label></div>
 <div class="actions"><button class="btn" type="submit">Salvar alterações</button><button type="button" id="toggle">Bloquear / desbloquear</button><button type="button" class="danger" id="block-lead-ip">Bloquear IP deste cadastro</button></div><p id="notice" class="notice"></p></form></div></div>
 <script>
 const csrf={{ csrf_token|tojson }};
@@ -143,7 +141,7 @@ async function api(url,opt={}){opt.headers=Object.assign({},opt.headers||{}, {'X
 let rows=[],selected=null;
 const esc=v=>String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 async function load(){try{rows=(await api('/api/admin/cadastros')).items;draw()}catch(e){alert(e.message)}}
-function draw(){const q=document.getElementById('search').value.toLowerCase();const a=rows.filter(x=>(x.name+' '+x.store+' '+x.city+' '+x.whatsapp).toLowerCase().includes(q));document.getElementById('lead-rows').innerHTML=a.map(x=>'<tr data-id="'+x.id+'"><td>'+esc(x.created_at)+'</td><td>'+esc(x.name)+'</td><td>'+esc(x.store)+'</td><td>'+esc(x.city)+'/'+esc(x.state)+'</td><td>'+esc(x.whatsapp)+'</td><td class="'+x.status+'">'+(x.status==='blocked'?'Bloqueado':'Ativo')+'</td></tr>').join('');document.querySelectorAll('#lead-rows tr').forEach(t=>t.onclick=()=>openLead(Number(t.dataset.id)))}
+function draw(){const q=document.getElementById('search').value.toLowerCase();const a=rows.filter(x=>(x.name+' '+x.tax_id+' '+x.email).toLowerCase().includes(q));document.getElementById('lead-rows').innerHTML=a.map(x=>'<tr data-id="'+x.id+'"><td>'+esc(x.created_at)+'</td><td>'+esc(x.name)+'</td><td>'+esc(x.tax_id)+'</td><td>'+esc(x.email)+'</td><td class="'+x.status+'">'+(x.status==='blocked'?'Bloqueado':'Ativo')+'</td></tr>').join('');document.querySelectorAll('#lead-rows tr').forEach(t=>t.onclick=()=>openLead(Number(t.dataset.id)))}
 async function openLead(id){try{selected=await api('/api/admin/cadastros/'+id);const f=document.getElementById('edit');Object.keys(selected).forEach(k=>{if(f.elements[k])f.elements[k].value=selected[k]||''});document.getElementById('meta').textContent='Cadastro #'+id+' · IP '+selected.ip+' · '+selected.created_at;document.getElementById('modal').classList.add('open')}catch(e){alert(e.message)}}
 document.getElementById('edit').onsubmit=async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target).entries());try{await api('/api/admin/cadastros/'+d.id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});document.getElementById('notice').textContent='Cadastro atualizado';await load()}catch(x){document.getElementById('notice').textContent=x.message}};
 document.getElementById('toggle').onclick=async()=>{if(!selected)return;try{await api('/api/admin/cadastros/'+selected.id+'/status',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:selected.status==='blocked'?'active':'blocked'})});document.getElementById('modal').classList.remove('open');await load()}catch(e){alert(e.message)}};
@@ -163,7 +161,9 @@ def get_db():
 
 def init_db():
     with get_db() as c:
-        c.execute("""CREATE TABLE IF NOT EXISTS frete_leads(id BIGSERIAL PRIMARY KEY,name VARCHAR(120) NOT NULL,store VARCHAR(160) NOT NULL,city VARCHAR(100) NOT NULL,state CHAR(2) NOT NULL,whatsapp VARCHAR(20) NOT NULL,business_type VARCHAR(100) NOT NULL,daily_orders VARCHAR(40),message VARCHAR(1000),ip INET NOT NULL,status VARCHAR(12) NOT NULL DEFAULT 'active' CHECK(status IN ('active','blocked')),created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW())""")
+        c.execute("""CREATE TABLE IF NOT EXISTS frete_leads(id BIGSERIAL PRIMARY KEY,name VARCHAR(120) NOT NULL,store VARCHAR(160),city VARCHAR(100),state CHAR(2),whatsapp VARCHAR(20),business_type VARCHAR(100),daily_orders VARCHAR(40),message VARCHAR(1000),tax_id VARCHAR(18),email VARCHAR(254),ip INET NOT NULL,status VARCHAR(12) NOT NULL DEFAULT 'active' CHECK(status IN ('active','blocked')),created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW())""")
+        c.execute("ALTER TABLE frete_leads ADD COLUMN IF NOT EXISTS tax_id VARCHAR(18)")
+        c.execute("ALTER TABLE frete_leads ADD COLUMN IF NOT EXISTS email VARCHAR(254)")
         c.execute("CREATE INDEX IF NOT EXISTS idx_frete_leads_ip_created ON frete_leads(ip,created_at DESC)")
         c.execute("""CREATE TABLE IF NOT EXISTS frete_ip_blocks(ip INET PRIMARY KEY,reason VARCHAR(250) NOT NULL,created_at TIMESTAMPTZ NOT NULL DEFAULT NOW())""")
 
@@ -179,18 +179,21 @@ def create_lead():
     d=request.get_json(silent=True) or {}
     if d.get("website"): return jsonify({"error":"Não foi possível validar o cadastro."}),400
     if d.get("consent") is not True: return jsonify({"error":"Autorize o contato para enviar o cadastro."}),400
-    keys=("name","store","city","state","whatsapp","business_type","daily_orders","message")
+    keys=("name","tax_id","email")
     v={k:str(d.get(k,"")).strip() for k in keys}
-    if not all(v[k] for k in keys[:6]): return jsonify({"error":"Preencha os campos obrigatórios."}),400
-    if any(len(v[k])>n for k,n in (("name",120),("store",160),("city",100),("whatsapp",20),("message",1000))): return jsonify({"error":"Limite de caracteres excedido."}),400
-    if not v["whatsapp"].replace("+","").replace("(","").replace(")","").replace("-","").replace(" ","").isdigit(): return jsonify({"error":"WhatsApp inválido."}),400
+    if not all(v.values()): return jsonify({"error":"Preencha todos os campos obrigatórios."}),400
+    tax_digits="".join(ch for ch in v["tax_id"] if ch.isdigit())
+    if len(tax_digits) not in (11,14): return jsonify({"error":"Informe um CPF ou CNPJ válido."}),400
+    if len(v["name"])>120 or len(v["email"])>254: return jsonify({"error":"Limite de caracteres excedido."}),400
+    if "@" not in v["email"] or "." not in v["email"].split("@")[-1]: return jsonify({"error":"E-mail inválido."}),400
+    v["tax_id"]=tax_digits
     try:
         ip=get_client_ip()
         with get_db() as c:
             if c.execute("SELECT 1 FROM frete_ip_blocks WHERE ip=%s",(ip,)).fetchone(): return jsonify({"error":"Acesso temporariamente bloqueado."}),429
             count=c.execute("SELECT COUNT(*) AS n FROM frete_leads WHERE ip=%s AND created_at>NOW()-INTERVAL '10 minutes'",(ip,)).fetchone()["n"]
             if count>=3: return jsonify({"error":"Limite de envios atingido. Aguarde alguns minutos."}),429
-            c.execute("INSERT INTO frete_leads(name,store,city,state,whatsapp,business_type,daily_orders,message,ip) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)",(v["name"],v["store"],v["city"],v["state"].upper(),v["whatsapp"],v["business_type"],v["daily_orders"],v["message"],ip))
+            c.execute("INSERT INTO frete_leads(name,tax_id,email,ip) VALUES(%s,%s,%s,%s)",(v["name"],v["tax_id"],v["email"],ip))
         return jsonify({"ok":True}),201
     except RuntimeError: return jsonify({"error":"Cadastro temporariamente indisponível. Tente novamente mais tarde."}),503
     except ValueError: return jsonify({"error":"Origem do envio inválida."}),400
@@ -201,7 +204,7 @@ def create_lead():
 @app.get("/api/admin/cadastros")
 @admin_required
 def list_leads():
-    with get_db() as c: rows=c.execute("SELECT id,name,store,city,state,whatsapp,status,created_at FROM frete_leads ORDER BY created_at DESC LIMIT 1000").fetchall()
+    with get_db() as c: rows=c.execute("SELECT id,name,tax_id,email,status,created_at FROM frete_leads ORDER BY created_at DESC LIMIT 1000").fetchall()
     return jsonify({"items":[{**dict(x),"created_at":x["created_at"].strftime("%d/%m/%Y %H:%M UTC")} for x in rows]})
 
 @app.get("/api/admin/cadastros/<int:lead_id>")
@@ -215,10 +218,11 @@ def detail_lead(lead_id):
 @app.patch("/api/admin/cadastros/<int:lead_id>")
 @admin_required
 def edit_lead(lead_id):
-    csrf_check();d=request.get_json(silent=True) or {};ks=("name","store","city","state","whatsapp","business_type","daily_orders","message","status");v={k:str(d.get(k,"")).strip() for k in ks}
-    if v["status"] not in ("active","blocked") or not all(v[k] for k in ks[:6]):return jsonify({"error":"Dados inválidos"}),400
+    csrf_check();d=request.get_json(silent=True) or {};ks=("name","tax_id","email","status");v={k:str(d.get(k,"")).strip() for k in ks}
+    tax_digits="".join(ch for ch in v["tax_id"] if ch.isdigit())
+    if v["status"] not in ("active","blocked") or not v["name"] or len(tax_digits) not in (11,14) or "@" not in v["email"]:return jsonify({"error":"Dados inválidos"}),400
     with get_db() as c:
-        q=c.execute("UPDATE frete_leads SET name=%s,store=%s,city=%s,state=%s,whatsapp=%s,business_type=%s,daily_orders=%s,message=%s,status=%s,updated_at=NOW() WHERE id=%s",(v["name"][:120],v["store"][:160],v["city"][:100],v["state"][:2].upper(),v["whatsapp"][:20],v["business_type"][:100],v["daily_orders"][:40],v["message"][:1000],v["status"],lead_id))
+        q=c.execute("UPDATE frete_leads SET name=%s,tax_id=%s,email=%s,status=%s,updated_at=NOW() WHERE id=%s",(v["name"][:120],tax_digits,v["email"][:254],v["status"],lead_id))
     if not q.rowcount:return jsonify({"error":"Cadastro não encontrado"}),404
     return jsonify({"ok":True})
 
