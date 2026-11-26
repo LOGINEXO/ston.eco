@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#075334">
+<meta name="description" content="Entregas locais e nacionais para sua loja, com rastreamento em tempo real e integração com plataformas de mercado.">
+<title>Frete Stone | Você vende. A Stone entrega.</title>
+<style>
+:root{--green:#075334;--deep:#043c27;--lime:#9eff00;--paper:#f3f7f4;--ink:#163528;--muted:#64756b;--white:#fff}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#fff;color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif}
+header{position:sticky;top:0;z-index:5;background:#fffffff2;border-bottom:1px solid #e2ebe5;backdrop-filter:blur(12px)}
+.nav{max-width:1160px;margin:auto;padding:15px 22px;display:flex;align-items:center;justify-content:center;gap:18px}.brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:-1px;color:var(--green);font-size:22px;text-decoration:none}.brand-name{white-space:nowrap}.brand-name span{color:#7cbd00}.brand-stone-logo{display:block;width:76px;height:auto;object-fit:contain}
+nav{width:100%;display:flex;gap:9px;align-items:center;justify-content:center;flex-wrap:wrap}nav a{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:10px 15px;border-radius:12px;background:#e5f2e9;color:var(--green);text-decoration:none;font-size:14px;font-weight:800;border:1px solid #cfe3d5;transition:.18s}nav a:hover{background:#d4eadb;transform:translateY(-1px)}nav a.navbtn{background:var(--lime);color:var(--deep);border-color:var(--lime);padding:11px 19px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;background:var(--lime);color:var(--deep);border:0;border-radius:13px;padding:15px 21px;font-weight:900;text-decoration:none;cursor:pointer;box-shadow:0 8px 22px #9eff0030;transition:transform .18s,box-shadow .18s}.btn:hover{transform:translateY(-2px);box-shadow:0 12px 25px #9eff0045}.btn.secondary{background:#fff;color:var(--green);box-shadow:none;border:1px solid #cfe3d5}
+.hero{background:radial-gradient(circle at 82% 20%,#176c45 0,#075334 38%,#043c27 80%);color:#fff;overflow:hidden}.hero-in{max-width:1160px;margin:auto;padding:82px 22px 78px;display:grid;grid-template-columns:1.08fr .92fr;gap:42px;align-items:center}.eyebrow{color:var(--lime);font-weight:850;text-transform:uppercase;letter-spacing:1.5px;font-size:12px}.hero h1{font-size:clamp(42px,6vw,68px);line-height:1.02;letter-spacing:-2.8px;margin:16px 0}.hero h1 span{color:var(--lime)}.hero p{font-size:18px;line-height:1.65;color:#e1eee6;max-width:590px;margin:0 0 23px}.benefits{list-style:none;padding:0;margin:24px 0 28px;display:grid;gap:13px}.benefits li{display:flex;align-items:center;gap:11px;font-weight:700;color:#f4fff7}.check{width:23px;height:23px;flex:0 0 23px;border-radius:50%;background:var(--lime);color:var(--deep);display:grid;place-items:center;font-size:14px;font-weight:950}
+.hero-art{min-height:340px;border:1px solid #ffffff2b;border-radius:30px;background:linear-gradient(145deg,#ffffff16,#ffffff06);display:grid;place-items:center;position:relative;overflow:hidden}.stone-logo-panel{width:min(88%,470px);min-height:190px;padding:30px 24px;border:1px solid #ffffff35;border-radius:24px;background:#ffffffed;display:grid;place-items:center;box-shadow:0 22px 50px #001c1233;z-index:1}.hero-stone-logo{display:block;width:100%;max-width:430px;height:auto;object-fit:contain}.art-caption{position:absolute;bottom:22px;left:0;right:0;text-align:center;color:#e2f2e8;font-size:12px;font-weight:750;letter-spacing:1.4px;text-transform:uppercase}
+
+.video-section{background:#fff}.video-frame{max-width:940px;margin:0 auto;aspect-ratio:16/9;border-radius:24px;overflow:hidden;background:#062b1c;box-shadow:0 20px 55px #043c2724;border:1px solid #dce9e0}.video-frame iframe{display:block;width:100%;height:100%;border:0}.video-caption{max-width:760px;margin:18px auto 0;text-align:center;color:var(--muted);line-height:1.6;font-size:14px}
+.trust{border-bottom:1px solid #e7eee9;background:#fff}.trust-in{max-width:1160px;margin:auto;padding:22px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.trust-item{display:flex;align-items:center;gap:10px;color:var(--green);font-weight:800;font-size:14px}.trust-icon{width:34px;height:34px;border-radius:11px;background:#e9f5ed;display:grid;place-items:center;color:var(--green);font-size:17px}
+.wrap{max-width:1160px;margin:auto;padding:72px 22px}.section-head{max-width:720px;margin:0 auto 32px;text-align:center}.section-head .eyebrow{color:#568500}.section-head h2{font-size:clamp(30px,4vw,43px);letter-spacing:-1.4px;color:var(--deep);margin:10px 0}.section-head p{color:var(--muted);line-height:1.65;font-size:16px}
+.services{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.service{background:#fff;border:1px solid #e1ebe4;border-radius:22px;padding:26px;box-shadow:0 12px 35px #0b40200a}.service .symbol{width:48px;height:48px;border-radius:15px;background:#e9f5ed;color:var(--green);display:grid;place-items:center;font-size:24px;margin-bottom:18px}.service h3{margin:0 0 9px;color:var(--deep);font-size:21px}.service p{color:var(--muted);line-height:1.6;margin:0 0 16px}.service ul{padding-left:18px;margin:0;color:#315542;line-height:1.9;font-size:14px}.service strong{color:var(--green)}
+
+.control{background:#f4f8f5;overflow:hidden}.control-grid{display:grid;grid-template-columns:1fr 1fr;gap:38px;align-items:center}.control-copy h2{font-size:clamp(30px,4vw,43px);line-height:1.08;letter-spacing:-1.4px;color:var(--deep);margin:10px 0 16px}.control-copy p{color:var(--muted);line-height:1.7}.control-visual{padding:14px;border-radius:24px;background:#fff;border:1px solid #e1ebe4;box-shadow:0 16px 40px #0b402012}.control-visual img{display:block;width:100%;height:auto;border-radius:14px}.support{background:var(--deep);color:#fff}.support-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center}.support h2{font-size:clamp(29px,4vw,42px);letter-spacing:-1.2px;margin:10px 0}.support p{color:#e0eee5;line-height:1.7;font-size:16px}.support-pill{display:inline-flex;align-items:center;gap:10px;border:1px solid #ffffff38;background:#ffffff12;border-radius:14px;padding:16px 18px;color:#fff;font-weight:800}.support-pill b{color:var(--lime)}.results{background:#f3f7f4}.results-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.metric{background:#fff;border:1px solid #e1ebe4;border-radius:22px;padding:28px;box-shadow:0 12px 35px #0b40200a}.metric-value{font-size:clamp(42px,6vw,60px);font-weight:950;letter-spacing:-2px;color:var(--green);line-height:1}.metric h3{color:var(--deep);font-size:20px;margin:12px 0 8px}.metric p{color:var(--muted);line-height:1.65;margin:0}.results-note{font-size:12px;color:var(--muted);text-align:center;margin-top:18px}
+.steps{background:var(--paper)}.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.step{background:#fff;border-radius:18px;padding:24px;border:1px solid #e2ebe5}.step-num{font-size:12px;font-weight:900;color:#568500;letter-spacing:1px}.step h3{color:var(--deep);margin:10px 0 8px}.step p{color:var(--muted);line-height:1.6;margin:0}
+.cta{background:linear-gradient(120deg,#e9f5ed,#f4f8f4);border:1px solid #dcebe1;border-radius:26px;padding:34px;display:flex;align-items:center;justify-content:space-between;gap:24px}.cta h2{color:var(--deep);font-size:clamp(26px,4vw,36px);margin:8px 0}.cta p{color:var(--muted);line-height:1.6;margin:0}.cta .eyebrow{color:#568500}
+footer{background:var(--deep);color:#d6e5dc;padding:30px 22px;text-align:center;font-size:13px}
+
+/* Seções inspiradas na experiência oficial Stone Entrega */
+.integrations-stone{background:#f3fff4;color:#101b13;overflow:hidden}
+.integrations-layout{display:grid;grid-template-columns:minmax(260px,.95fr) minmax(440px,1.2fr);gap:34px;align-items:center}
+.integrations-copy .eyebrow,.tower-stone .eyebrow{color:#008b45}
+.integrations-copy h2{font-size:clamp(38px,5vw,58px);line-height:.98;letter-spacing:-2.6px;color:#101b13;margin:14px 0 20px;font-weight:950}
+.integrations-copy p{font-size:15px;line-height:1.65;color:#34443a;max-width:470px}
+.integration-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}
+.integration-actions .btn{background:#17251b;color:#fff;box-shadow:none;border-radius:28px;padding:14px 22px}
+.integration-actions .btn.secondary{background:transparent;color:#17251b;border:1px solid #d4e2d5}
+.integration-orbit{min-height:440px;position:relative;display:grid;place-items:center;isolation:isolate}
+.integration-orbit:before,.integration-orbit:after{content:"";position:absolute;border:1px solid #d6e6d8;border-radius:50%;width:78%;aspect-ratio:1;pointer-events:none}
+.integration-orbit:after{width:48%;background:radial-gradient(circle,#ffffff 0 48%,#f3fff4b8 70%);border-style:dashed;border-color:#b9d7bf}
+.integration-links{position:absolute;inset:0;width:100%;height:100%;z-index:0;overflow:visible;pointer-events:none}
+.integration-links path{fill:none;stroke:#9fc7a8;stroke-width:1.7;stroke-dasharray:2 7;stroke-linecap:round;opacity:.9}
+.integration-core{position:relative;z-index:2;width:164px;height:62px;border:1px solid #8ed600;border-radius:18px;background:#fff;display:grid;place-items:center;box-shadow:0 10px 30px #163b1718}
+.integration-core img{width:130px;height:auto;object-fit:contain}
+.integration-node{position:absolute;z-index:3;display:grid;place-items:center;min-width:74px;min-height:54px;padding:7px 11px;background:rgba(255,255,255,.97);border:1px solid #e2eee4;border-radius:15px;box-shadow:0 8px 22px #18351a12;font-size:10px;font-weight:900;color:#17251b;letter-spacing:-.25px;backdrop-filter:blur(5px);animation:integration-float 5.8s ease-in-out infinite}
+.integration-node:nth-of-type(2n){animation-delay:-2.1s}
+.integration-node:nth-of-type(3n){animation-delay:-3.7s}
+.integration-node:before{content:none}
+@keyframes integration-float{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(0,-7px,0)}}
+@media(prefers-reduced-motion:reduce){.integration-node{animation:none}}
+.integration-node.n1{top:2%;left:10%;color:#008b45}.integration-node.n2{top:0;left:31%;color:#6436aa}.integration-node.n3{top:0;right:31%;color:#ef6c22}.integration-node.n4{top:3%;right:9%;color:#e50055}
+.integration-node.n5{top:27%;left:0;color:#673ab7}.integration-node.n6{top:27%;right:0;color:#121212}.integration-node.n7{top:48%;left:0;color:#008b45}.integration-node.n8{top:48%;right:0;color:#ed4c27}
+.integration-node.n9{bottom:19%;left:2%;color:#063b2a}.integration-node.n10{bottom:19%;right:2%;color:#e60039}
+.integration-node.n11{bottom:2%;left:14%;color:#0759bf}.integration-node.n12{bottom:0;left:35%;color:#283c80}.integration-node.n13{bottom:0;right:35%;color:#008b45}.integration-node.n14{bottom:2%;right:14%;color:#37204f}
+.tower-stone{background:#f4faf5;overflow:hidden}
+.tower-stone-head{max-width:760px;margin:0 auto 30px;text-align:center}
+.tower-stone-head h2{font-size:clamp(34px,5vw,54px);line-height:1.02;letter-spacing:-2px;color:#102218;margin:12px 0}
+.tower-stone-head p{color:#506157;line-height:1.6}
+.tower-tabs{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin:0 auto 24px}
+.tower-tab{border:1px solid #d5e3d8;background:#fff;color:#173b29;border-radius:30px;padding:12px 16px;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;transition:.2s}
+.tower-tab[aria-selected="true"]{background:#073f2b;color:#fff;border-color:#073f2b;box-shadow:0 6px 18px #073f2b20}
+.tower-panel{display:grid;grid-template-columns:.78fr 1.22fr;gap:30px;align-items:center;max-width:1100px;margin:auto;background:#fff;border:1px solid #e1ebe3;border-radius:24px;padding:26px;box-shadow:0 18px 45px #0a3b1c0b}
+.tower-panel-copy h3{font-size:clamp(24px,3vw,34px);letter-spacing:-1px;color:#073f2b;margin:0 0 12px}
+.tower-panel-copy p{font-size:15px;line-height:1.7;color:#56675d;margin:0}
+.tower-image{border:1px solid #edf1ed;border-radius:15px;overflow:hidden;background:#f7faf8;min-height:250px;display:grid;place-items:center}
+.tower-image img{display:block;width:100%;height:auto;max-height:420px;object-fit:contain}
+@media(max-width:850px){.integrations-layout{grid-template-columns:1fr}.integrations-copy{max-width:650px}.integration-orbit{min-height:350px}.tower-panel{grid-template-columns:1fr}.tower-panel-copy{order:0}.tower-image{order:1}}
+@media(max-width:520px){.integrations-layout{gap:10px}.integration-orbit{min-height:320px;transform:none;margin:0 -14px}.integration-node{min-width:55px;min-height:42px;font-size:8px;padding:4px 6px;border-radius:11px}.integration-core{width:126px;height:48px}.integration-core img{width:102px}.integration-links path{stroke-dasharray:2 8}.integrations-copy h2{font-size:40px;letter-spacing:-1.8px}.tower-tabs{justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto;padding:0 0 9px}.tower-tab{white-space:nowrap;flex:0 0 auto}.tower-panel{padding:17px;border-radius:18px}.tower-image{min-height:170px}}
+
+.lead-form{max-width:850px;margin:auto;padding:28px;background:#f7faf8;border:1px solid #dfebe3;border-radius:22px}.lead-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.lead-grid label{display:grid;gap:7px;color:var(--deep);font-size:13px;font-weight:800}.lead-grid input,.lead-grid select,.lead-grid textarea{width:100%;padding:13px;border:1px solid #d3e2d8;border-radius:11px;background:white;font:inherit}.lead-wide{grid-column:1/-1}.lead-consent{display:flex;gap:10px;margin:18px 0;color:var(--muted);font-size:13px}.lead-hp{position:absolute;left:-10000px}.lead-feedback{font-weight:700;min-height:22px}@media(max-width:600px){.lead-grid{grid-template-columns:1fr}.lead-wide{grid-column:auto}.lead-form{padding:18px}}
+@media(max-width:800px){.hero-in{grid-template-columns:1fr;padding-top:60px}.hero-art{min-height:250px}.trust-in{grid-template-columns:1fr 1fr}.services{grid-template-columns:1fr}.steps-grid{grid-template-columns:1fr}.control-grid,.support-grid{grid-template-columns:1fr}.results-grid{grid-template-columns:1fr}.cta{display:block}.cta .btn{margin-top:20px}}
+@media(max-width:640px){.nav{padding:10px 12px}nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}nav a{width:100%;min-width:0;min-height:40px;padding:9px 7px;font-size:clamp(11px,3.2vw,13px);text-align:center;white-space:normal;line-height:1.2}nav a:last-child{grid-column:1/-1}}@media(max-width:520px){.hero h1{letter-spacing:-1.8px}.hero-in{padding-left:18px;padding-right:18px}.trust-in{padding:18px;gap:12px}.trust-item{font-size:12px}.trust-icon{width:30px;height:30px;flex-basis:30px}.wrap{padding:55px 18px}.cta{padding:25px}}
+</style></head>
+<body>
+<header><div class="nav"><nav aria-label="Navegação principal"><a href="#inicio">Início</a><a href="#servicos">Serviços</a><a href="#integracoes">Integrações</a><a href="#painel">Torre de Controle</a><a class="navbtn" href="#cadastro">Cadastro</a></nav></div></header>
+<main>
+<section class="hero" id="inicio"><div class="hero-in">
+<div><div class="eyebrow">Logística para o seu negócio</div><h1>Você vende.<br><span>A Stone entrega.</span></h1><p>Entregas locais e nacionais, com rastreamento em tempo real e integração com as principais plataformas do mercado.</p>
+<ul class="benefits"><li><span class="check">✓</span>Ative hoje mesmo, em poucos minutos</li><li><span class="check">✓</span>Sem mensalidade</li><li><span class="check">✓</span>Melhores preços do mercado</li><li><span class="check">✓</span>Atendimento com qualidade Stone</li></ul>
+<a class="btn" href="#cadastro">Quero começar <span aria-hidden="true">→</span></a>
+</div><div class="hero-art" role="img" aria-label="Logotipo oficial Stone Entrega"><div class="stone-logo-panel"><img class="hero-stone-logo" src="https://any.stone.com.br/_next/static/media/logo-stone-entrega.0uzjvkd.bt4kx.png" alt="Stone Entrega"></div><div class="art-caption">Sua loja em movimento</div></div>
+</div></section>
+
+<section class="video-section wrap" id="demonstracao"><div class="section-head"><div class="eyebrow">Conheça a plataforma</div><h2>Veja como a Stone simplifica suas entregas.</h2><p>Uma demonstração da experiência de gestão e acompanhamento dos seus envios.</p></div><div class="video-frame"><iframe src="https://player.mux.com/my8KNRY8IRLbuZxqV4beiUmohkOFLlZRBaKi5MMM028U?metadata-video-title=Frete%20Stone%20-%20Demonstra%C3%A7%C3%A3o&amp;video-title=Frete%20Stone" title="Demonstração da plataforma Stone Entrega" loading="lazy" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen></iframe></div><p class="video-caption">Conheça os recursos da plataforma para organizar e acompanhar as entregas do seu negócio.</p></section>
+<section class="trust"><div class="trust-in"><div class="trust-item"><span class="trust-icon">⌖</span>Entregas locais</div><div class="trust-item"><span class="trust-icon">↗</span>Envios nacionais</div><div class="trust-item"><span class="trust-icon">◎</span>Rastreamento em tempo real</div><div class="trust-item"><span class="trust-icon">⇄</span>Integrações de mercado</div></div></section>
+<section class="integrations-stone" id="integracoes"><div class="wrap"><div class="integrations-layout">
+<div class="integrations-copy"><div class="eyebrow">Integrações</div><h2>Conecte sua loja<br>em minutos</h2><p>Mais de 20 plataformas de e-commerce e gestão conectadas à Stone Entrega, além de API aberta para integração nativa e painel web para criar pedidos manualmente.</p><div class="integration-actions"><a class="btn" href="https://stone-entrega.stone.com.br/docs/introdu%C3%A7%C3%A3o" target="_blank" rel="noopener">Ver Documentação</a><a class="btn secondary" href="https://any.stone.com.br/integracoes" target="_blank" rel="noopener">Ver catálogo de integrações</a></div></div>
+<div class="integration-orbit" aria-label="Plataformas integradas à Stone Entrega">
+<svg class="integration-links" viewBox="0 0 600 440" aria-hidden="true"><g><path d="M300 220 L90 35 M300 220 L230 25 M300 220 L370 25 M300 220 L510 40 M300 220 L28 135 M300 220 L572 135 M300 220 L25 220 M300 220 L575 220 M300 220 L45 330 M300 220 L555 330 M300 220 L105 410 M300 220 L235 420 M300 220 L365 420 M300 220 L495 410"/></g></svg>
+<div class="integration-core"><img src="https://any.stone.com.br/_next/static/media/logo-stone-entrega.0uzjvkd.bt4kx.png" alt="Stone Entrega"></div>
+<span class="integration-node n1">PLUGG.TO</span><span class="integration-node n2">Linx Commerce</span><span class="integration-node n3">Linx Omni</span><span class="integration-node n4">VTEX</span><span class="integration-node n5">Yampi</span><span class="integration-node n6">Wake</span><span class="integration-node n7">Base</span><span class="integration-node n8">Let's</span><span class="integration-node n9">Bling</span><span class="integration-node n10">WBuy</span><span class="integration-node n11">Nuvemshop</span><span class="integration-node n12">Intelipost</span><span class="integration-node n13">Softvar</span><span class="integration-node n14">Frete Rápido</span>
+</div></div></div></section>
+<section class="wrap" id="servicos"><div class="section-head"><div class="eyebrow">Soluções de entrega</div><h2>Escolha a entrega ideal para cada pedido</h2><p>Atenda seus clientes na sua região ou envie produtos para qualquer lugar do Brasil.</p></div>
+<div class="services">
+<article class="service"><div class="symbol">⚡</div><h3>Entrega Turbo</h3><p>Agilidade para pedidos locais, com motorista dedicado que coleta na sua loja e leva diretamente ao cliente.</p><ul><li>Prazo de até <strong>2 horas</strong></li><li>Alcance de até <strong>25 km</strong></li><li>Sem volume mínimo</li></ul></article>
+<article class="service"><div class="symbol">☀</div><h3>No mesmo dia</h3><p>Uma coleta consolidada no seu endereço para lojas com maior volume de pedidos.</p><ul><li>Entrega no mesmo dia para pedidos até 13h</li><li>Alcance de até <strong>40 km</strong></li><li>A partir de <strong>10 pedidos por dia</strong></li></ul></article>
+<article class="service"><div class="symbol">✈</div><h3>Entrega nacional</h3><p>Envie para todo o Brasil com opções expressas ou econômicas e acompanhe seus pedidos.</p><ul><li>Cobertura em todo o território nacional</li><li>Modalidades expressa e econômica</li><li>Sem volume mínimo para postagem</li></ul></article>
+</div></section>
+
+<section class="tower-stone" id="painel"><div class="wrap"><div class="tower-stone-head"><div class="eyebrow">Torre de Controle</div><h2>Sua operação inteira,<br>em um só painel</h2><p>Tudo o que vem junto com a Stone Entrega, em qualquer serviço.</p></div>
+<div class="tower-tabs" role="tablist" aria-label="Recursos da Torre de Controle">
+<button class="tower-tab" type="button" role="tab" aria-selected="true" data-tower="0">Rastreamento em tempo real</button>
+<button class="tower-tab" type="button" role="tab" aria-selected="false" data-tower="1">Cliente sempre informado</button>
+<button class="tower-tab" type="button" role="tab" aria-selected="false" data-tower="2">Painel gerencial</button>
+<button class="tower-tab" type="button" role="tab" aria-selected="false" data-tower="3">Envios locais e nacionais</button>
+<button class="tower-tab" type="button" role="tab" aria-selected="false" data-tower="4">Gestão de usuários e contas</button>
+</div>
+<div class="tower-panel" role="tabpanel"><div class="tower-panel-copy"><h3 id="tower-title">Rastreamento em tempo real</h3><p id="tower-description">Acompanhe cada pedido ponta a ponta pela plataforma, com status, prazo estimado e dados do motorista em tempo real.</p></div><div class="tower-image"><img id="tower-image" src="https://any.stone.com.br/_next/static/media/tracking.00-l9ioipziqa.jpeg" alt="Tela de rastreamento em tempo real da Stone Entrega" loading="lazy"></div></div>
+</div></section>
+<section class="support"><div class="wrap"><div class="support-grid"><div><div class="eyebrow">Atendimento de qualidade Stone</div><h2>Envios locais e nacionais, com suporte quando você precisar.</h2><p>Se alguma etapa precisar da gente, conte com atendimento direto pela plataforma ou pelo WhatsApp. A primeira resposta chega em menos de 1 minuto.</p></div><div class="support-pill"><span aria-hidden="true">◷</span><span>Primeira resposta em <b>menos de 1 minuto</b></span></div></div></div></section>
+<section class="results"><div class="wrap"><div class="section-head"><div class="eyebrow">Resultados para sua loja</div><h2>Mais vendas, menos custo com frete.</h2><p>Entregar mais rápido, em mais lugares e pelo melhor preço aparece direto no resultado da sua loja.</p></div>
+<div class="results-grid"><article class="metric"><div class="metric-value">−28%</div><h3>nos custos de frete</h3><p>O tamanho da Stone e o acesso a mais de 10 transportadoras ajudam a encontrar preços competitivos para cada envio.</p></article><article class="metric"><div class="metric-value">+24%</div><h3>na taxa de conversão</h3><p>Entregando em mais lugares, mais rápido e mais barato, mais clientes podem concluir a compra no checkout.</p></article></div><div class="results-note">Indicadores de resultado divulgados pela Stone Entrega.</div>
+</div></section>
+<section class="steps" id="como-funciona"><div class="wrap"><div class="section-head"><div class="eyebrow">Simples para sua rotina</div><h2>Mais facilidade do pedido à entrega</h2><p>Organize os envios da sua loja com uma operação conectada e acompanhamento em cada etapa.</p></div><div class="steps-grid"><article class="step"><div class="step-num">01 · PREPARE</div><h3>Venda e prepare o pedido</h3><p>Continue vendendo pelos seus canais e deixe o pacote pronto para envio.</p></article><article class="step"><div class="step-num">02 · ENVIE</div><h3>Escolha a modalidade</h3><p>Conte com opções locais e nacionais para atender cada destino.</p></article><article class="step"><div class="step-num">03 · ACOMPANHE</div><h3>Rastreie a entrega</h3><p>Acompanhe o andamento do pedido e mantenha seu cliente informado.</p></article></div></div></section>
+<section class="wrap" id="cadastro"><div class="section-head"><div class="eyebrow">Comece hoje</div><h2>Cadastre sua loja</h2><p>Preencha apenas os dados básicos para iniciar seu cadastro.</p></div>
+<form id="lead-form" class="lead-form"><div class="lead-grid">
+<label class="lead-wide">Nome completo *<input name="name" maxlength="120" autocomplete="name" required></label>
+<label>CPF ou CNPJ *<input name="tax_id" maxlength="18" inputmode="numeric" autocomplete="off" placeholder="Digite CPF ou CNPJ" required></label>
+<label>E-mail *<input name="email" type="email" maxlength="254" autocomplete="email" required></label>
+<label class="lead-hp" aria-hidden="true">Não preencher<input name="website" tabindex="-1" autocomplete="off"></label></div>
+<label class="lead-consent"><input type="checkbox" name="consent" required> Autorizo o contato da equipe Frete Stone sobre este cadastro.</label>
+<button class="btn" type="submit">Continuar pelo WhatsApp →</button><p id="lead-feedback" role="status"></p></form></section>
+</main><footer>Frete Stone · Soluções de entrega para o seu negócio</footer>
+<script>(()=>{const f=document.getElementById('lead-form');if(!f)return;f.addEventListener('submit',e=>{e.preventDefault();const d=new FormData(f);const message='Olá! Tenho interesse nos serviços Frete Stone.\nNome: '+d.get('name')+'\nCPF/CNPJ: '+d.get('tax_id')+'\nE-mail: '+d.get('email');location.href='https://wa.me/5511971078203?text='+encodeURIComponent(message);});})();
+const towerFeatures=[
+{title:'Rastreamento em tempo real',description:'Acompanhe cada pedido ponta a ponta pela plataforma, com status, prazo estimado e dados do motorista em tempo real.',image:'https://any.stone.com.br/_next/static/media/tracking.00-l9ioipziqa.jpeg',alt:'Tela de rastreamento em tempo real da Stone Entrega'},
+{title:'Cliente sempre informado',description:'Seu cliente recebe atualizações por SMS, WhatsApp e e-mail em cada etapa e acompanha a entrega sem precisar te chamar.',image:'https://any.stone.com.br/_next/static/media/mensageria.0i-cm-9afxcdb.jpeg',alt:'Tela de comunicação e avisos ao cliente da Stone Entrega'},
+{title:'Painel gerencial',description:'Consulte indicadores da operação, visualize relatórios e acompanhe o histórico de entregas para tomar decisões com mais clareza.',image:'https://any.stone.com.br/_next/static/media/dashboard.024mele41ppcn.jpeg',alt:'Painel gerencial da Stone Entrega com indicadores e gráficos'},
+{title:'Envios locais e nacionais',description:'Organize pedidos, escolha modalidades de entrega e acompanhe envios locais ou para todo o Brasil em uma única plataforma.',image:'https://any.stone.com.br/_next/static/media/pedidos.0u~n-2sb.2s_3.jpeg',alt:'Tela de pedidos e opções de envio da Stone Entrega'},
+{title:'Gestão de usuários e contas',description:'Gerencie usuários e contas da operação em um só ambiente, mantendo as informações da sua equipe organizadas.',image:'https://any.stone.com.br/_next/static/media/multi_contas.0~ev6-np0t-2t.gif',alt:'Tela de gestão de usuários e contas da Stone Entrega'}
+];
+const towerTabs=document.querySelectorAll('[data-tower]');
+towerTabs.forEach(tab=>tab.addEventListener('click',()=>{
+ const feature=towerFeatures[Number(tab.dataset.tower)];
+ if(!feature)return;
+ towerTabs.forEach(item=>item.setAttribute('aria-selected',String(item===tab)));
+ document.getElementById('tower-title').textContent=feature.title;
+ document.getElementById('tower-description').textContent=feature.description;
+ const img=document.getElementById('tower-image');
+ img.src=feature.image;img.alt=feature.alt;
+}));
+</script></body></html>
