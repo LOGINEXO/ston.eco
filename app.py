@@ -70,7 +70,7 @@ footer{background:var(--deep);color:#d6e5dc;padding:30px 22px;text-align:center;
 .tower-stone-head h2{font-size:clamp(34px,5vw,54px);line-height:1.02;letter-spacing:-2px;color:#102218;margin:12px 0}
 .tower-stone-head p{color:#506157;line-height:1.6}
 .tower-tabs{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin:0 auto 24px}
-.tower-tab{border:1px solid #d5e3d8;background:#fff;color:#173b29;border-radius:30px;padding:12px 16px;font:800 13px inherit;cursor:pointer;transition:.2s}
+.tower-tab{border:1px solid #d5e3d8;background:#fff;color:#173b29;border-radius:30px;padding:12px 16px;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;transition:.2s}
 .tower-tab[aria-selected="true"]{background:#073f2b;color:#fff;border-color:#073f2b;box-shadow:0 6px 18px #073f2b20}
 .tower-panel{display:grid;grid-template-columns:.78fr 1.22fr;gap:30px;align-items:center;max-width:1100px;margin:auto;background:#fff;border:1px solid #e1ebe3;border-radius:24px;padding:26px;box-shadow:0 18px 45px #0a3b1c0b}
 .tower-panel-copy h3{font-size:clamp(24px,3vw,34px);letter-spacing:-1px;color:#073f2b;margin:0 0 12px}
@@ -85,7 +85,7 @@ footer{background:var(--deep);color:#d6e5dc;padding:30px 22px;text-align:center;
 @media(max-width:520px){.nav{padding:12px 14px;gap:8px}.brand{font-size:17px;gap:6px}.brand-stone-logo{width:58px}nav{gap:5px}nav a{min-height:37px;padding:8px 10px;font-size:12px}.hero h1{letter-spacing:-1.8px}.hero-in{padding-left:18px;padding-right:18px}.trust-in{padding:18px;gap:12px}.trust-item{font-size:12px}.trust-icon{width:30px;height:30px;flex-basis:30px}.wrap{padding:55px 18px}.cta{padding:25px}}
 </style></head>
 <body>
-<header><div class="nav"><a class="brand" href="/" aria-label="Frete Stone início"><span class="brand-name">FRETE <span>STONE</span></span><img class="brand-stone-logo" src="https://any.stone.com.br/_next/static/media/logo-stone-entrega.0uzjvkd.bt4kx.png" alt="Stone Entrega"></a><nav aria-label="Navegação principal"><a href="#inicio">Início</a><a href="#servicos">Serviços</a><a href="#como-funciona">Como funciona</a><a class="navbtn" href="#cadastro">Cadastro</a></nav></div></header>
+<header><div class="nav"><a class="brand" href="/" aria-label="Frete Stone início"><span class="brand-name">FRETE <span>STONE</span></span><img class="brand-stone-logo" src="https://any.stone.com.br/_next/static/media/logo-stone-entrega.0uzjvkd.bt4kx.png" alt="Stone Entrega"></a><nav aria-label="Navegação principal"><a href="#inicio">Início</a><a href="#servicos">Serviços</a><a href="#integracoes">Integrações</a><a href="#painel">Torre de Controle</a><a class="navbtn" href="#cadastro">Cadastro</a></nav></div></header>
 <main>
 <section class="hero" id="inicio"><div class="hero-in">
 <div><div class="eyebrow">Logística para o seu negócio</div><h1>Você vende.<br><span>A Stone entrega.</span></h1><p>Entregas locais e nacionais, com rastreamento em tempo real e integração com as principais plataformas do mercado.</p>
