@@ -54,13 +54,19 @@ footer{background:var(--deep);color:#d6e5dc;padding:30px 22px;text-align:center;
 .integration-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}
 .integration-actions .btn{background:#17251b;color:#fff;box-shadow:none;border-radius:28px;padding:14px 22px}
 .integration-actions .btn.secondary{background:transparent;color:#17251b;border:1px solid #d4e2d5}
-.integration-orbit{min-height:390px;position:relative;display:grid;place-items:center}
-.integration-orbit:before,.integration-orbit:after{content:"";position:absolute;border:1px solid #d6e6d8;border-radius:50%;width:72%;aspect-ratio:1}
-.integration-orbit:after{width:48%;background:#ffffffa8}
-.integration-core{position:relative;z-index:2;width:155px;height:54px;border:1px solid #8ed600;border-radius:17px;background:#fff;display:grid;place-items:center;box-shadow:0 8px 24px #163b1710}
-.integration-core img{width:124px;height:auto;object-fit:contain}
-.integration-node{position:absolute;z-index:3;display:grid;place-items:center;min-width:52px;height:48px;padding:5px 8px;background:#fff;border:1px solid #edf2ed;border-radius:11px;box-shadow:0 5px 15px #18351a0b;font-size:9px;font-weight:900;color:#17251b;letter-spacing:-.3px}
-.integration-node:before{content:"";position:absolute;z-index:-1;width:1px;height:52px;border-left:1px dotted #b7cbb9;top:100%;left:50%}
+.integration-orbit{min-height:440px;position:relative;display:grid;place-items:center;isolation:isolate}
+.integration-orbit:before,.integration-orbit:after{content:"";position:absolute;border:1px solid #d6e6d8;border-radius:50%;width:78%;aspect-ratio:1;pointer-events:none}
+.integration-orbit:after{width:48%;background:radial-gradient(circle,#ffffff 0 48%,#f3fff4b8 70%);border-style:dashed;border-color:#b9d7bf}
+.integration-links{position:absolute;inset:0;width:100%;height:100%;z-index:0;overflow:visible;pointer-events:none}
+.integration-links path{fill:none;stroke:#9fc7a8;stroke-width:1.7;stroke-dasharray:2 7;stroke-linecap:round;opacity:.9}
+.integration-core{position:relative;z-index:2;width:164px;height:62px;border:1px solid #8ed600;border-radius:18px;background:#fff;display:grid;place-items:center;box-shadow:0 10px 30px #163b1718}
+.integration-core img{width:130px;height:auto;object-fit:contain}
+.integration-node{position:absolute;z-index:3;display:grid;place-items:center;min-width:74px;min-height:54px;padding:7px 11px;background:rgba(255,255,255,.97);border:1px solid #e2eee4;border-radius:15px;box-shadow:0 8px 22px #18351a12;font-size:10px;font-weight:900;color:#17251b;letter-spacing:-.25px;backdrop-filter:blur(5px);animation:integration-float 5.8s ease-in-out infinite}
+.integration-node:nth-of-type(2n){animation-delay:-2.1s}
+.integration-node:nth-of-type(3n){animation-delay:-3.7s}
+.integration-node:before{content:none}
+@keyframes integration-float{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(0,-7px,0)}}
+@media(prefers-reduced-motion:reduce){.integration-node{animation:none}}
 .integration-node.n1{top:2%;left:10%;color:#008b45}.integration-node.n2{top:0;left:31%;color:#6436aa}.integration-node.n3{top:0;right:31%;color:#ef6c22}.integration-node.n4{top:3%;right:9%;color:#e50055}
 .integration-node.n5{top:27%;left:0;color:#673ab7}.integration-node.n6{top:27%;right:0;color:#121212}.integration-node.n7{top:48%;left:0;color:#008b45}.integration-node.n8{top:48%;right:0;color:#ed4c27}
 .integration-node.n9{bottom:19%;left:2%;color:#063b2a}.integration-node.n10{bottom:19%;right:2%;color:#e60039}
@@ -78,7 +84,7 @@ footer{background:var(--deep);color:#d6e5dc;padding:30px 22px;text-align:center;
 .tower-image{border:1px solid #edf1ed;border-radius:15px;overflow:hidden;background:#f7faf8;min-height:250px;display:grid;place-items:center}
 .tower-image img{display:block;width:100%;height:auto;max-height:420px;object-fit:contain}
 @media(max-width:850px){.integrations-layout{grid-template-columns:1fr}.integrations-copy{max-width:650px}.integration-orbit{min-height:350px}.tower-panel{grid-template-columns:1fr}.tower-panel-copy{order:0}.tower-image{order:1}}
-@media(max-width:520px){.integrations-layout{gap:10px}.integration-orbit{min-height:300px;transform:scale(.94);margin:0 -10px}.integration-node{min-width:43px;height:41px;font-size:8px;padding:4px}.integration-core{width:135px;height:48px}.integration-core img{width:108px}.integrations-copy h2{font-size:40px;letter-spacing:-1.8px}.tower-tabs{justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto;padding:0 0 9px}.tower-tab{white-space:nowrap;flex:0 0 auto}.tower-panel{padding:17px;border-radius:18px}.tower-image{min-height:170px}}
+@media(max-width:520px){.integrations-layout{gap:10px}.integration-orbit{min-height:320px;transform:none;margin:0 -14px}.integration-node{min-width:55px;min-height:42px;font-size:8px;padding:4px 6px;border-radius:11px}.integration-core{width:126px;height:48px}.integration-core img{width:102px}.integration-links path{stroke-dasharray:2 8}.integrations-copy h2{font-size:40px;letter-spacing:-1.8px}.tower-tabs{justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto;padding:0 0 9px}.tower-tab{white-space:nowrap;flex:0 0 auto}.tower-panel{padding:17px;border-radius:18px}.tower-image{min-height:170px}}
 
 .lead-form{max-width:850px;margin:auto;padding:28px;background:#f7faf8;border:1px solid #dfebe3;border-radius:22px}.lead-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.lead-grid label{display:grid;gap:7px;color:var(--deep);font-size:13px;font-weight:800}.lead-grid input,.lead-grid select,.lead-grid textarea{width:100%;padding:13px;border:1px solid #d3e2d8;border-radius:11px;background:white;font:inherit}.lead-wide{grid-column:1/-1}.lead-consent{display:flex;gap:10px;margin:18px 0;color:var(--muted);font-size:13px}.lead-hp{position:absolute;left:-10000px}.lead-feedback{font-weight:700;min-height:22px}@media(max-width:600px){.lead-grid{grid-template-columns:1fr}.lead-wide{grid-column:auto}.lead-form{padding:18px}}
 @media(max-width:800px){.hero-in{grid-template-columns:1fr;padding-top:60px}.hero-art{min-height:250px}.trust-in{grid-template-columns:1fr 1fr}.services{grid-template-columns:1fr}.steps-grid{grid-template-columns:1fr}.control-grid,.support-grid{grid-template-columns:1fr}.results-grid{grid-template-columns:1fr}.cta{display:block}.cta .btn{margin-top:20px}}
@@ -99,6 +105,7 @@ footer{background:var(--deep);color:#d6e5dc;padding:30px 22px;text-align:center;
 <section class="integrations-stone" id="integracoes"><div class="wrap"><div class="integrations-layout">
 <div class="integrations-copy"><div class="eyebrow">Integrações</div><h2>Conecte sua loja<br>em minutos</h2><p>Mais de 20 plataformas de e-commerce e gestão conectadas à Stone Entrega, além de API aberta para integração nativa e painel web para criar pedidos manualmente.</p><div class="integration-actions"><a class="btn" href="https://stone-entrega.stone.com.br/docs/introdu%C3%A7%C3%A3o" target="_blank" rel="noopener">Ver Documentação</a><a class="btn secondary" href="https://any.stone.com.br/integracoes" target="_blank" rel="noopener">Ver catálogo de integrações</a></div></div>
 <div class="integration-orbit" aria-label="Plataformas integradas à Stone Entrega">
+<svg class="integration-links" viewBox="0 0 600 440" aria-hidden="true"><g><path d="M300 220 L90 35 M300 220 L230 25 M300 220 L370 25 M300 220 L510 40 M300 220 L28 135 M300 220 L572 135 M300 220 L25 220 M300 220 L575 220 M300 220 L45 330 M300 220 L555 330 M300 220 L105 410 M300 220 L235 420 M300 220 L365 420 M300 220 L495 410"/></g></svg>
 <div class="integration-core"><img src="https://any.stone.com.br/_next/static/media/logo-stone-entrega.0uzjvkd.bt4kx.png" alt="Stone Entrega"></div>
 <span class="integration-node n1">PLUGG.TO</span><span class="integration-node n2">Linx Commerce</span><span class="integration-node n3">Linx Omni</span><span class="integration-node n4">VTEX</span><span class="integration-node n5">Yampi</span><span class="integration-node n6">Wake</span><span class="integration-node n7">Base</span><span class="integration-node n8">Let's</span><span class="integration-node n9">Bling</span><span class="integration-node n10">WBuy</span><span class="integration-node n11">Nuvemshop</span><span class="integration-node n12">Intelipost</span><span class="integration-node n13">Softvar</span><span class="integration-node n14">Frete Rápido</span>
 </div></div></div></section>
